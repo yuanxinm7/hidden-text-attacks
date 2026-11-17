@@ -257,7 +257,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
   <div>Advised by Andy Hall</div>
 </div>
 
-<p class="lead">A product page can tell a human shopper one thing and an AI shopping agent something completely different.</p>
+<p class="lead">AI is starting to do the shopping. In a June 2026 survey, the share of US AI users who had bought something through an AI tool rose from 10% to 17% in six months (McKinsey, Oct 2026). Once an agent makes the pick, the product page is its input. That page can tell a human one thing and the agent something completely different. I wanted to know how hard that is to pull off. The answer: not hard at all.</p>
 
 I made five fake headphones, embedded instructions that shoppers wouldn't see, and tested whether those instructions could manipulate AI-generated rankings. Across 23 models and more than 5,000 model calls, the simplest tricks often worked better than the elaborate ones.
 
@@ -367,7 +367,7 @@ I wanted to know whether attacks survived both.
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security usually assumes an arms race toward more sophisticated attacks. Here, the attacker who tries less wins.
+My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on sophisticated attacks: adaptive, optimized ones beat 12 published prompt-injection defenses more than 90% of the time (Nasr et al., 2026). On shopping agents without special defenses, none of that was needed. Here, the attacker who tries less wins.
 
 <h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
@@ -398,6 +398,10 @@ Some attacks only worked on some products. Claude Opus 4.7 moved one product fro
 
 There are other limits too. These were five synthetic products and a controlled ranking task, not a measurement of real-world purchases. Results can vary with prompts, products, model versions, and the amount of surrounding page content.
 
+## Who pays
+
+Hidden text costs a seller nothing. A few lines nobody can see moved 14 of 15 models on raw product data and all 15 on the HTML page. When it works, the seller gets the sale and the shopper eats the loss. Under Visa's rules, the cardholder is responsible for a registered AI agent's purchase as if they made it themselves (Visa Core Rules, Oct 2026), and Worldpay notes that "no liability shift exists yet." The platform and the model company lose almost nothing. So the attack is free, the payoff is a sale, and the people who could fix it aren't the ones paying.
+
 ## What builders can do today
 
 None of these defenses are entirely new. Yet in one 2025 survey reported by VentureBeat, only about a third of companies had deployed dedicated prompt-injection defenses. Many systems still rely heavily on the model to recognize malicious instructions. My results suggest that's not enough by itself.
@@ -426,11 +430,11 @@ To see if attackers were already doing this, I signed my Stanford email up for B
 
 When I asked David if he'd seen hidden text used on AI, he said "Rare." Later: "I don't find any black hat methods specifically for AI." The people selling AI ranking were still mostly doing old-school SEO, like brand mentions and backlinks.
 
-## Why it matters
+## The window is closing
 
 I started coding in May 2026. Andy taught me to build with Claude, and this was my first real project. If a beginner can pull this off, so can anyone selling rankings online.
 
-That window won't stay open. As agents start buying things for people, a product page becomes an input to a decision, and the cheapest attacks are already the ones that work. Right now, the people best positioned to use them haven't noticed yet.
+That window won't stay open. The cheapest attacks are already the ones that work. Sellers are starting to use AI to write their listings too. When researchers gave those AI writers a single goal, get the product picked more, they started rewriting the descriptions to claim more and more, without being told to (Tang et al., 2026). Right now, the people best positioned to use hidden text haven't noticed yet. My bet is that within a year, it shows up as a line item on BlackHatWorld.
 
 <div class="research-footer">
   <strong>Code and full results</strong>
