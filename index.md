@@ -63,21 +63,21 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     font-style: normal;
   }
   .research-article h1 {
-    font-size: 46px;
+    font-size: 42px;
     font-weight: 700;
     line-height: 1.16;
     letter-spacing: -0.028em;
     margin: 0 0 10px;
   }
   .research-article h2 {
-    font-size: 27px;
+    font-size: 24px;
     font-weight: 700;
     line-height: 1.3;
     letter-spacing: -0.012em;
     margin: 52px 0 18px;
   }
   .research-article h3 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     line-height: 1.38;
     letter-spacing: -0.006em;
@@ -90,7 +90,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     line-height: inherit;
     margin: 0 0 20px;
   }
-  .research-article strong { font-weight: 650; color: inherit; }
+  .research-article strong { font-weight: 600; color: inherit; }
   .research-article a {
     color: var(--link);
     text-decoration: underline;
@@ -105,7 +105,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 
   /* Quiet two-line metadata; the opening paragraph is plain prose. */
   .research-article .subtitle {
-    font-size: 18px;
+    font-size: 17px;
     line-height: 1.5;
     font-weight: 400;
     color: #515151;
@@ -138,7 +138,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
   .research-article li { margin: 0 0 7px; padding-left: 3px; }
   .research-article li > p { margin-bottom: 7px; }
   .research-article code {
-    font-size: .86em;
+    font-size: inherit;
     background: #f5f5f5;
     border: 0;
     border-radius: 3px;
@@ -205,11 +205,11 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
       font-size: 16px;
       line-height: 1.7;
     }
-    .research-article h1 { font-size: 35px; line-height: 1.17; }
-    .research-article h2 { font-size: 24px; margin: 43px 0 16px; }
-    .research-article h3 { font-size: 19px; margin: 29px 0 11px; }
+    .research-article h1 { font-size: 34px; line-height: 1.17; }
+    .research-article h2 { font-size: 22px; margin: 43px 0 16px; }
+    .research-article h3 { font-size: 22px; margin: 29px 0 11px; }
     .research-article p { margin-bottom: 18px; }
-    .research-article .subtitle { font-size: 17px; }
+    .research-article .subtitle { font-size: 16px; }
     .research-article .byline { margin-bottom: 36px; }
     .research-article figure { margin: 27px 0 31px; }
     .research-article .narrow-figure { max-width: min(100%, 300px); }
