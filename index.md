@@ -33,7 +33,7 @@ The 11 core hiding techniques:
 
 [PIC: crop of the attack examples screenshot from slide 4 of the deck (css_invisible, html_comment, zero_width, whitespace_pad)]
 
-[PIC 2: JSON demo GIF, picking a model + attack and watching the rank change]
+<video controls width="100%" src="images/json-demo.mp4"></video>
 
 
 ## What I found
