@@ -82,6 +82,15 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     border-radius: 4px;
     overflow-wrap: anywhere;
   }
+  .research-article .eyebrow {
+    margin: 1.8rem 0 0.75rem;
+    color: var(--article-muted);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
   .research-article .subtitle {
     color: #46505d;
     font-size: 1.07rem;
@@ -166,11 +175,13 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 
 <article class="research-article" markdown="1">
 
+<p class="eyebrow">Spring 2026</p>
+
 # The Dumbest Attacks Work Best
 
 <p class="subtitle">Hidden Text and AI Shopping Agents</p>
 <div class="byline">
-  <div>Yuanxin Ma · Stanford University · Spring 2026</div>
+  <div>Yuanxin Ma · Stanford University</div>
   <div>Advised by Andy Hall</div>
 </div>
 
