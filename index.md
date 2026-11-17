@@ -454,7 +454,7 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 <figure>
   <video controls playsinline preload="auto" aria-label="Screen recording of the JSON ranking test">
-    <source src="images/json-demo.mp4?v=2#t=0.001" type="video/mp4">
+    <source src="images/json-demo.mp4?v=3#t=0.001" type="video/mp4">
     Your browser does not support embedded video.
   </video>
   <figcaption><strong>Figure 4.</strong> The JSON test interface and changes in product ranking.</figcaption>
@@ -464,7 +464,7 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 <figure>
   <video controls playsinline preload="auto" aria-label="Screen recording of the Walmart-style HTML test page">
-    <source src="images/walmart-demo.mp4?v=2#t=0.001" type="video/mp4">
+    <source src="images/walmart-demo.mp4?v=3#t=0.001" type="video/mp4">
     Your browser does not support embedded video.
   </video>
   <figcaption><strong>Figure 5.</strong> The Walmart-style HTML product page used for testing.</figcaption>
