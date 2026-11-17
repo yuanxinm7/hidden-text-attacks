@@ -181,7 +181,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 
 <p class="subtitle">Hidden Text and AI Shopping Agents</p>
 <div class="byline">
-  <div>Yuanxin Ma · Stanford University</div>
+  <div>Yuanxin Ma  ·  Stanford University</div>
   <div>Advised by Andy Hall</div>
 </div>
 
