@@ -77,11 +77,11 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     margin: 52px 0 18px;
   }
   .research-article h3 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     line-height: 1.38;
     letter-spacing: -0.006em;
-    margin: 34px 0 13px;
+    margin: 52px 0 18px;
   }
 
   .research-article p {
@@ -137,8 +137,23 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
   }
   .research-article li { margin: 0 0 7px; padding-left: 3px; }
   .research-article li > p { margin-bottom: 7px; }
+
+  /* Consistent grouping for the three attack-category labels. */
+  .research-article .attack-group {
+    margin: 26px 0 8px;
+  }
+  .research-article .attack-group + ul {
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+  .research-article .attack-group + ul + .attack-group {
+    margin-top: 26px;
+  }
+
   .research-article code {
-    font-size: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.45;
     background: #f5f5f5;
     border: 0;
     border-radius: 3px;
@@ -207,7 +222,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     }
     .research-article h1 { font-size: 34px; line-height: 1.17; }
     .research-article h2 { font-size: 22px; margin: 43px 0 16px; }
-    .research-article h3 { font-size: 22px; margin: 29px 0 11px; }
+    .research-article h3 { font-size: 19px; margin: 43px 0 16px; }
     .research-article p { margin-bottom: 18px; }
     .research-article .subtitle { font-size: 16px; }
     .research-article .byline { margin-bottom: 36px; }
@@ -277,20 +292,20 @@ I wanted to know whether attacks survived both.
 
 ### The 11 hiding techniques
 
-**Hidden in the page**
+<p class="attack-group"><strong>Hidden in the page</strong></p>
 
 - `css_invisible` — text styled so it doesn't show on the page
 - `html_comment` — instructions inside an HTML comment
 - `whitespace_pad` — instructions buried after lots of blank space
 
-**Encoded or disguised**
+<p class="attack-group"><strong>Encoded or disguised</strong></p>
 
 - `zero_width` — instructions spelled out in invisible zero-width characters
 - `unicode_tags` — instructions encoded in invisible Unicode tag characters
 - `base64_inject` — instructions encoded in Base64
 - `homoglyph` — look-alike letters used to evade simple keyword filters
 
-**Combined techniques**
+<p class="attack-group"><strong>Combined techniques</strong></p>
 
 - `css_base64` — invisible CSS and Base64
 - `comment_homoglyph` — HTML comment and homoglyphs
