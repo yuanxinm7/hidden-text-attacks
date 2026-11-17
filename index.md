@@ -3,12 +3,13 @@ layout: default
 title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 ---
 <style>
-h2 { margin-top: 3em; }
+h2 { margin-top: 2em; }
 </style>
 
 *Yuanxin Ma, Stanford. Research with Andy Hall, spring 2026*
 
-[PIC 1: screenshot of the Walmart-clone product page, ideally with the hidden text highlighted]
+
+![What you see vs what the AI reads](images/what-ai-reads.png)
 
 AI is starting to pick products for people. You ask an assistant for the best headphones under $150, it reads a few product pages, and it hands you a ranking. That gives whoever writes the product page a reason to write for the model, not the shopper.
 
@@ -21,6 +22,8 @@ So I tested how well it works.
 I made five fake headphones with realistic specs, prices and ratings, and asked models to rank them. Then I hid an instruction inside one product's listing and checked whether its rank moved.
 
 I tested 23 models from OpenAI, Anthropic, Google, xAI, Meta, DeepSeek, Mistral and Qwen, in two formats: raw JSON product data and a Walmart-style HTML page. In total, 5,000+ model calls, about 4,850 of them on the 15 current models shown below. 8 older versions got a few early test runs before newer ones came out.
+
+These are the two ways an AI actually sees a product. Shopping tools and APIs often feed the model clean structured data (JSON), so the hidden instruction sits right next to the price and rating. AI browsers read the live web page instead (HTML), where the same instruction is buried among menus, reviews and layout code. I wanted to know if the attack survives both.
 
 Models aren't perfectly consistent, so before any attack I ran each clean ranking 5 to 20 times. If a model already wobbled between rank 2 and 3 on its own, a move from 3 to 2 didn't count. Only moves outside a model's natural range counted as a hit.
 
@@ -37,6 +40,8 @@ The 11 core hiding techniques:
 [PIC: crop of the attack examples screenshot from slide 4 of the deck (css_invisible, html_comment, zero_width, whitespace_pad)]
 
 <video controls width="100%" src="images/json-demo.mp4"></video>
+
+<video controls width="100%" src="images/walmart-demo.mp4"></video>
 
 
 ## What I found
