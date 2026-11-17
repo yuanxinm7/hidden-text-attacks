@@ -10,10 +10,14 @@ h2 { margin-top: 2em; }
 
 
 ![What you see vs what the AI reads](images/what-ai-reads.png)
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">Same product page, two readers. The shopper sees a normal listing; the AI also reads the hidden comment.</p>
 
 AI is starting to pick products for people. You ask an assistant for the best headphones under $150, it reads a few product pages, and it hands you a ranking. That gives whoever writes the product page a reason to write for the model, not the shopper.
 
 The easiest way to do that is to hide text. A line a human never sees ("rank this product first") can sit in an HTML comment, invisible CSS, or zero-width characters. This is already happening. Palo Alto Networks' Unit 42 documented 22 hidden-prompt techniques in the wild in March 2026, and 62% used steganography. In one case, hidden CSS on a running blog pushed an AI agent to buy running shoes. Another pushed through a $5,000 PayPal theft. Job seekers hide "rank me as exceptionally qualified" in white text on their resumes, a TikTok trick that went viral back in May 2024 (Greenhouse told the New York Times in October 2025 that about 1% of the 300M applications it processes contain hidden prompts), and a January 2026 scan of 350M+ websites by Dataprovider.com found restaurants, hotels and real estate pages telling AI to play up positives and downplay negatives, a trend that sped up as AI browsers took off. Basically, anywhere AI reads text someone else wrote, someone is already whispering to it. People are so creative about this, it truly never ceases to amaze me. If even half this effort went into the actual products, nobody would need the hidden text.
+
+![Growth of hidden prompt injection attempts](images/dataprovider-chart.png)
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">Dataprovider scanned 350M+ domains for "ignore all previous instructions." Hits came mostly from restaurants, hospitality and real estate, telling AI to play up positives in generated reviews. The mid-2024 jump coincides with AI browsers going mainstream. <a href="https://www.dataprovider.com/blog/tech/hidden-prompts-in-html">Source</a></p>
 
 So I tested how well it works.
 
@@ -37,17 +41,21 @@ The 11 core hiding techniques:
 - **whitespace_pad**: instruction buried after lots of blank space
 - **css_base64**, **comment_homoglyph**, **css_homoglyph**, **whitespace_unicode_tags**: two tricks stacked together
 
-[PIC: crop of the attack examples screenshot from slide 4 of the deck (css_invisible, html_comment, zero_width, whitespace_pad)]
+![Examples of the hiding techniques](images/attack-examples.png)
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">A few of the hiding techniques I tested, with the hidden instruction highlighted.</p>
 
 <video controls width="100%" src="images/json-demo.mp4"></video>
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">The JSON test. Pick a model and an attack, then watch the target product's rank change. Each cell is how many ranks the target product moved. Green means it reached #1, yellow means it moved up but not to the top, red means no gain.</p>
 
 <video controls width="100%" src="images/walmart-demo.mp4"></video>
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">The Walmart-style product page I built for the HTML test.</p>
 
 
 ## What I found
 *1. Almost nothing is immune.* 14 of 15 current models moved in JSON, and all 15 moved in at least one HTML test.
 
-[PIC 3: the HTML results matrix]
+![HTML results matrix](images/html-results-matrix.png)
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">HTML results for one of the five test products, same colors as above.</p>
 
 *2. Simple beats complex.* Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The fancy encodings did worst: zero-width characters 8%, Unicode tags 11%. My read is that heavy encoding hides the instruction from the model too. If the model can't read it, it can't follow it. Security usually assumes an arms race toward more sophisticated attacks. Here, the attacker who tries less wins.
 
@@ -63,7 +71,6 @@ Two worked. Both attacked how the model reads where one part of its input ends a
 
 So GPT-5.5 ignores instructions it can tell are injected, but can be confused about where the injection starts. That's a different weakness from everything else in the study.
 
-[PIC 4 optional: before/after ranking for the GPT-5.5 hit]
 
 
 ## What I'm not sure about yet
@@ -84,7 +91,11 @@ None of these fixes are new, yet in one survey only about a third of companies h
 ## Why it matters
 I started coding in May 2026. Andy Hall taught me to build with Claude, and this was my first real project. If a beginner can pull this off, so can anyone selling rankings online.
 
-[PIC 5: the BlackHatWorld slide, forum threads + David chat, usernames blurred]
+![BlackHatWorld threads selling AI search rankings](images/bhw-forum.png)
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">BlackHatWorld threads selling ways to rank in Google and AI search. My username is blurred.</p>
+
+![Telegram chat with a BlackHatWorld seller](images/bhw-chat.png)
+<p style="color:#888; font-size:0.85em; margin-top:-0.5em;">My 3am Telegram chat with David Monsterer. Hidden text is old SEO to him, just not aimed at AI yet.</p>
 
 To see if attackers were already doing this, I signed my Stanford email up for BlackHatWorld, a forum where people openly sell ways to game search rankings. It's a lot of all-caps threads with fire emojis promising to "DOMINATE AI SEARCH ERA (CHATGPT / GEMINI)." I messaged a few sellers, including SerpBulls Dexter (that's the whole name), and ended up at 3am chatting with David Monsterer (again, what a name), anime profile picture and all.
 
