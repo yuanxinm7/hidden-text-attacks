@@ -8,163 +8,206 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-  /* Minimal editorial layout, inspired by the restraint of a16z Frontier. */
+  /* One editorial system. Scoped resets prevent Minima's defaults
+     from giving headings, text, and media different visual rhythms. */
   :root {
-    --article-ink: #242424;
-    --article-muted: #686868;
-    --article-accent: #bf4b2b;
-    --article-rule: #e4e4e4;
-    --article-soft: #f6f6f6;
+    --ink: #252525;
+    --muted: #777777;
+    --link: #b94b32;
+    --rule: #dedede;
   }
 
-  /* Make this one-page project independent of Minima's site chrome. */
-  .site-header, .site-footer { display: none; }
   html { scroll-behavior: smooth; }
   body {
+    margin: 0;
     background: #fff;
-    color: var(--article-ink);
+    color: var(--ink);
     font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 17px;
-    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
-  .wrapper, .container-lg, .markdown-body {
-    max-width: 770px;
+
+  /* Minima supplies its own site chrome, wrapper and page padding.
+     Keep only a single reading column. */
+  .site-header, .site-footer { display: none; }
+  .page-content { padding: 0 !important; }
+  .page-content > .wrapper,
+  .wrapper {
     box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24px;
-    padding-right: 24px;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 28px;
   }
-  .post-content { font-size: inherit; }
+  .research-article,
+  .research-article * { box-sizing: border-box; }
   .research-article {
     width: 100%;
-    max-width: 710px;
-    margin: 0 auto;
+    margin: 0;
+    padding: 68px 0 72px;
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.72;
+    color: var(--ink);
   }
-  .research-article, .research-article * { box-sizing: border-box; }
 
-  /* One quiet typographic system; no decorative heading rules. */
-  .research-article h1, .research-article h2, .research-article h3 {
-    color: #202020;
-    border: 0;
+  /* Precise heading hierarchy, not theme-dependent em sizing. */
+  .research-article h1,
+  .research-article h2,
+  .research-article h3 {
+    font-family: inherit;
+    color: #1f1f1f;
     padding: 0;
+    border: 0;
+    text-transform: none;
+    font-style: normal;
   }
   .research-article h1 {
-    font-size: clamp(2.2rem, 5vw, 3rem);
+    font-size: 46px;
     font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin: 0 0 0.65rem;
+    line-height: 1.16;
+    letter-spacing: -0.028em;
+    margin: 0 0 10px;
   }
   .research-article h2 {
-    font-size: 1.7rem;
+    font-size: 27px;
     font-weight: 700;
-    letter-spacing: -0.015em;
     line-height: 1.3;
-    margin: 2.9rem 0 1.15rem;
+    letter-spacing: -0.012em;
+    margin: 52px 0 18px;
   }
   .research-article h3 {
-    font-size: 1.3rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    line-height: 1.4;
-    margin: 2rem 0 0.85rem;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.38;
+    letter-spacing: -0.006em;
+    margin: 34px 0 13px;
   }
-  .research-article p { margin: 0 0 1.3rem; }
-  .research-article strong { font-weight: 700; color: inherit; }
+
+  .research-article p {
+    font-size: inherit;
+    font-weight: 400;
+    line-height: inherit;
+    margin: 0 0 20px;
+  }
+  .research-article strong { font-weight: 650; color: inherit; }
   .research-article a {
-    color: var(--article-accent);
+    color: var(--link);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
-  .research-article a:hover { color: #90391f; }
+  .research-article a:hover { color: #8b3927; }
   .research-article a:focus-visible {
-    outline: 2px solid var(--article-accent);
+    outline: 2px solid var(--link);
     outline-offset: 3px;
   }
 
-  /* Article header. The first paragraph is normal prose, not a callout. */
+  /* Quiet two-line metadata; the opening paragraph is plain prose. */
   .research-article .subtitle {
-    color: #454545;
-    font-size: 1.12rem;
-    font-weight: 400;
+    font-size: 18px;
     line-height: 1.5;
-    margin: 0 0 1rem;
+    font-weight: 400;
+    color: #515151;
+    margin: 0 0 21px;
   }
   .research-article .byline {
-    color: var(--article-muted);
-    font-size: 0.9rem;
+    font-size: 14px;
+    font-weight: 400;
     line-height: 1.65;
-    margin: 0 0 2.5rem;
+    color: #777;
+    margin: 0 0 46px;
   }
   .research-article .lead {
+    font: inherit;
     color: inherit;
-    font-size: inherit;
-    font-weight: 400;
-    line-height: inherit;
-    margin-bottom: 1.3rem;
+    margin: 0 0 20px;
   }
 
-  /* Lists are readable without feeling like separate cards. */
-  .research-article ul, .research-article ol {
-    margin: 0.6rem 0 1.5rem 1.5rem;
+  .research-article ul,
+  .research-article ol {
+    font-size: inherit;
+    line-height: inherit;
+    margin: 8px 0 24px 26px;
+    padding: 0;
   }
-  .research-article li { margin-bottom: 0.4rem; padding-left: 0.1rem; }
-  .research-article li p { margin-bottom: 0.4rem; }
+  .research-article li { margin: 0 0 7px; padding-left: 3px; }
+  .research-article li > p { margin-bottom: 7px; }
   .research-article code {
-    font-size: 0.88em;
-    background: var(--article-soft);
+    font-size: .86em;
+    background: #f5f5f5;
+    border: 0;
     border-radius: 3px;
-    padding: 0.08em 0.28em;
+    padding: 2px 4px;
     overflow-wrap: anywhere;
   }
 
-  /* All figures use the same spacing and caption treatment. */
-  .research-article figure { margin: 2.2rem 0; }
-  .research-article figure img, .research-article figure video {
+  /* All media use the full reading width, except the conversation image. */
+  .research-article figure {
+    display: block;
+    width: 100%;
+    margin: 34px 0 38px;
+    padding: 0;
+  }
+  .research-article figure img,
+  .research-article figure video {
     display: block;
     width: 100%;
     max-width: 100%;
     height: auto;
     margin: 0;
-    border-radius: 4px;
+    border: 0;
+    border-radius: 2px;
   }
   .research-article figure video { background: #111; }
   .research-article figcaption {
-    font-size: 0.82rem;
+    font-family: inherit;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 400;
     line-height: 1.55;
-    color: #777;
-    margin-top: 0.6rem;
+    margin: 9px 0 0;
+    padding: 0;
     text-align: left;
   }
   .research-article figcaption strong { font-weight: 600; }
-  .research-article .narrow-figure { max-width: 400px; margin-left: auto; margin-right: auto; }
+  .research-article .narrow-figure {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-  /* Keep the two requested callouts but make them visually quiet. */
-  .research-article .method-note, .research-article .takeaway {
-    border-left: 2px solid #d8d8d8;
-    padding: 0 0 0 1rem;
-    margin: 1.8rem 0;
+  /* Preserve the two requested callouts, without colored styling. */
+  .research-article .method-note,
+  .research-article .takeaway {
+    border-left: 2px solid #d5d5d5;
+    margin: 26px 0 30px;
+    padding: 1px 0 1px 18px;
     color: inherit;
   }
   .research-article .method-note p:last-child,
   .research-article .takeaway p:last-child { margin-bottom: 0; }
   .research-article .research-footer {
-    border-top: 1px solid var(--article-rule);
-    margin-top: 3.25rem;
-    padding: 1.4rem 0 2rem;
+    border-top: 1px solid var(--rule);
+    margin: 56px 0 0;
+    padding: 22px 0 0;
   }
-  .research-article .research-footer p { margin: 0.5rem 0 0.8rem; }
+  .research-article .research-footer p { margin: 7px 0 11px; }
 
   @media (max-width: 600px) {
-    body { font-size: 16px; line-height: 1.65; }
-    .wrapper, .container-lg, .markdown-body { padding-left: 20px; padding-right: 20px; }
-    .research-article h1 { font-size: 2.1rem; }
-    .research-article h2 { font-size: 1.5rem; margin-top: 2.5rem; }
-    .research-article h3 { font-size: 1.18rem; margin-top: 1.8rem; }
-    .research-article figure { margin: 1.9rem 0; }
+    .wrapper, .page-content > .wrapper { padding: 0 22px; }
+    .research-article {
+      padding: 42px 0 52px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .research-article h1 { font-size: 35px; line-height: 1.17; }
+    .research-article h2 { font-size: 24px; margin: 43px 0 16px; }
+    .research-article h3 { font-size: 19px; margin: 29px 0 11px; }
+    .research-article p { margin-bottom: 18px; }
+    .research-article .subtitle { font-size: 17px; }
+    .research-article .byline { margin-bottom: 36px; }
+    .research-article figure { margin: 27px 0 31px; }
     .research-article .narrow-figure { max-width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) {
