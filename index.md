@@ -2,6 +2,9 @@
 layout: default
 title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 ---
+<style>
+p { margin-bottom: 1.5em; line-height: 1.7; }
+</style>
 
 *Yuanxin Ma, Stanford. Research with Andy Hall, spring 2026*
 
