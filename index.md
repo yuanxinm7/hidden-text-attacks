@@ -118,6 +118,10 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     color: #777;
     margin: 0 0 46px;
   }
+  .research-article .byline-separator {
+    display: inline-block;
+    margin: 0 11px;
+  }
   .research-article .lead {
     font: inherit;
     color: inherit;
@@ -142,7 +146,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     overflow-wrap: anywhere;
   }
 
-  /* All media use the full reading width, except the conversation image. */
+  /* A single spacing system for every figure, image, and video. */
   .research-article figure {
     display: block;
     width: 100%;
@@ -172,7 +176,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
   }
   .research-article figcaption strong { font-weight: 600; }
   .research-article .narrow-figure {
-    max-width: 400px;
+    max-width: 300px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -208,7 +212,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     .research-article .subtitle { font-size: 17px; }
     .research-article .byline { margin-bottom: 36px; }
     .research-article figure { margin: 27px 0 31px; }
-    .research-article .narrow-figure { max-width: 100%; }
+    .research-article .narrow-figure { max-width: min(100%, 300px); }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -221,7 +225,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 
 <p class="subtitle">Hidden Text and AI Shopping Agents</p>
 <div class="byline">
-  <div>Yuanxin Ma · Stanford University · Spring 2026</div>
+  <div class="byline-primary">Yuanxin Ma<span class="byline-separator">·</span>Stanford University<span class="byline-separator">·</span>Spring 2026</div>
   <div>Advised by Andy Hall</div>
 </div>
 
@@ -307,7 +311,7 @@ I wanted to know whether attacks survived both.
     <source src="images/json-demo.mp4" type="video/mp4">
     Your browser does not support embedded video.
   </video>
-  <figcaption><strong>Demo 1.</strong> The JSON test interface and changes in product ranking.</figcaption>
+  <figcaption><strong>Figure 4.</strong> The JSON test interface and changes in product ranking.</figcaption>
 </figure>
 
 **HTML shopping page.** Here is the Walmart-style product page I built to test the same idea in a more realistic browsing environment.
@@ -317,7 +321,7 @@ I wanted to know whether attacks survived both.
     <source src="images/walmart-demo.mp4" type="video/mp4">
     Your browser does not support embedded video.
   </video>
-  <figcaption><strong>Demo 2.</strong> The Walmart-style HTML product page used for testing.</figcaption>
+  <figcaption><strong>Figure 5.</strong> The Walmart-style HTML product page used for testing.</figcaption>
 </figure>
 
 ## What I found
@@ -328,7 +332,7 @@ I wanted to know whether attacks survived both.
 
 <figure>
   <img src="images/html-results-matrix.png" alt="Matrix showing which attacks changed model rankings in the HTML experiment." loading="lazy">
-  <figcaption><strong>Figure 4.</strong> HTML results for one of the five test products. Green means the target reached #1; yellow means it moved up but not to #1; red means no gain.</figcaption>
+  <figcaption><strong>Figure 6.</strong> HTML results for one of the five test products. Green means the target reached #1; yellow means it moved up but not to #1; red means no gain.</figcaption>
 </figure>
 
 ### 2. Simple beat complex
@@ -384,12 +388,12 @@ To see if attackers were already doing this, I signed my Stanford email up for B
 
 <figure>
   <img src="images/bhw-forum.png" alt="BlackHatWorld discussion threads advertising Google and AI-search ranking services." loading="lazy">
-  <figcaption><strong>Figure 5.</strong> BlackHatWorld threads selling ways to rank in Google and AI search. My username is blurred.</figcaption>
+  <figcaption><strong>Figure 7.</strong> BlackHatWorld threads selling ways to rank in Google and AI search. My username is blurred.</figcaption>
 </figure>
 
 <figure class="narrow-figure">
   <img src="images/bhw-chat.png" alt="Telegram conversation with a seller about hidden text and AI search rankings." loading="lazy">
-  <figcaption><strong>Figure 6.</strong> My 3am Telegram conversation with David Monsterer. Hidden text was familiar to him from old SEO, but he hadn't seen it used much against AI yet.</figcaption>
+  <figcaption><strong>Figure 8.</strong> My 3am Telegram conversation with David Monsterer. Hidden text was familiar to him from old SEO, but he hadn't seen it used much against AI yet.</figcaption>
 </figure>
 
 When I asked David if he'd seen hidden text used on AI, he said "Rare." Later: "I don't find any black hat methods specifically for AI." The people selling AI ranking were still mostly doing old-school SEO, like brand mentions and backlinks.
