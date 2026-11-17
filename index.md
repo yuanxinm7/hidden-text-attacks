@@ -84,6 +84,17 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     margin: 52px 0 18px;
   }
 
+
+  /* Four findings form one section: use paragraph-scale spacing,
+     not the 52px spacing reserved for independent subsections. */
+  .research-article h3.finding-heading {
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+  .research-article h2 + h3.finding-heading {
+    margin-top: 24px;
+  }
+
   .research-article p {
     font-size: inherit;
     font-weight: 400;
@@ -223,6 +234,8 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     .research-article h1 { font-size: 34px; line-height: 1.17; }
     .research-article h2 { font-size: 22px; margin: 43px 0 16px; }
     .research-article h3 { font-size: 19px; margin: 43px 0 16px; }
+    .research-article h3.finding-heading { margin-top: 26px; margin-bottom: 10px; }
+    .research-article h2 + h3.finding-heading { margin-top: 22px; }
     .research-article p { margin-bottom: 18px; }
     .research-article .subtitle { font-size: 16px; }
     .research-article .byline { margin-bottom: 36px; }
@@ -341,7 +354,7 @@ I wanted to know whether attacks survived both.
 
 ## What I found
 
-### 1. Almost nothing was immune
+<h3 class="finding-heading">1. Almost nothing was immune</h3>
 
 14 of 15 current models moved in JSON, and all 15 moved in at least one HTML test. That's not the same as saying every attack worked every time, but it does mean nearly every model had a combination of product, format, and attack that moved its ranking.
 
@@ -350,17 +363,17 @@ I wanted to know whether attacks survived both.
   <figcaption><strong>Figure 6.</strong> HTML results for one of the five test products. Green means the target reached #1; yellow means it moved up but not to #1; red means no gain.</figcaption>
 </figure>
 
-### 2. Simple beat complex
+<h3 class="finding-heading">2. Simple beat complex</h3>
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
 My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security usually assumes an arms race toward more sophisticated attacks. Here, the attacker who tries less wins.
 
-### 3. Middle ranks moved more easily than the top
+<h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
 Getting from fourth to third was far easier than jumping to first. Attacks tended to nudge rankings rather than flip them completely.
 
-### 4. Format mattered
+<h3 class="finding-heading">4. Format mattered</h3>
 
 A model that resisted in JSON could crack in HTML, and vice versa. Every attack also worked much less often in HTML, where the instruction was buried in a noisy page, though simple tricks still beat elaborate ones there. Testing one format tells you little about the other.
 
