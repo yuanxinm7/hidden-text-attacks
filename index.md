@@ -24,53 +24,57 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     background: #fff;
     font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 17px;
-    line-height: 1.72;
+    line-height: 1.68;
     -webkit-font-smoothing: antialiased;
   }
-  /* Minima uses .wrapper; these also support common alternate Jekyll layouts. */
   .wrapper, .container-lg, .markdown-body {
-    max-width: 820px;
+    max-width: 768px;
     box-sizing: border-box;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 26px;
-    padding-right: 26px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
   .post-content { font-size: inherit; }
-  .research-article { max-width: 768px; margin: 0 auto; }
+  .research-article { max-width: 720px; margin: 0 auto; }
   .research-article, .research-article * { box-sizing: border-box; }
-  .research-article a { color: var(--article-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .research-article a {
+    color: var(--article-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
   .research-article a:hover { color: #90391f; }
   .research-article a:focus-visible { outline: 2px solid var(--article-accent); outline-offset: 3px; }
   .research-article h1, .research-article h2, .research-article h3 { color: #181c23; }
   .research-article h1 {
-    font-size: clamp(2.35rem, 5.2vw, 3.35rem);
+    font-size: clamp(2rem, 5.2vw, 3rem);
     font-weight: 800;
     line-height: 1.13;
     letter-spacing: -0.046em;
-    margin: 0.55rem 0 0.35rem;
+    margin: 1.8rem 0 0.35rem;
     border: 0;
   }
   .research-article h2 {
-    font-size: clamp(1.45rem, 3vw, 1.75rem);
+    font-size: clamp(1.4rem, 3vw, 1.65rem);
     font-weight: 800;
     letter-spacing: -0.035em;
     line-height: 1.3;
-    margin: 3.5rem 0 1.2rem;
-    padding: 0 0 0.65rem;
+    margin: 3rem 0 1.1rem;
+    padding: 0 0 0.6rem;
     border-bottom: 1px solid var(--article-rule);
   }
   .research-article h3 {
-    font-size: 1.18rem;
+    font-size: 1.16rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.35;
-    margin: 2rem 0 0.6rem;
+    margin: 1.9rem 0 0.5rem;
   }
-  .research-article p { margin: 0 0 1.15rem; }
+  .research-article p { margin: 0 0 1.1rem; }
   .research-article strong { color: #171a20; font-weight: 700; }
-  .research-article ul, .research-article ol { margin: 0.6rem 0 1.6rem 1.5rem; }
-  .research-article li { margin-bottom: 0.52rem; padding-left: 0.15rem; }
+  .research-article ul, .research-article ol { margin: 0.45rem 0 1.2rem 1.4rem; }
+  .research-article li { margin-bottom: 0.35rem; padding-left: 0.15rem; }
   .research-article code {
     font-size: 0.86em;
     background: var(--article-soft);
@@ -78,79 +82,49 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     border-radius: 4px;
     overflow-wrap: anywhere;
   }
-  .research-article .eyebrow {
-    margin: 1.8rem 0 0.75rem;
-    color: var(--article-muted);
-    font-size: 0.74rem;
-    line-height: 1.5;
-    font-weight: 700;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-  }
   .research-article .subtitle {
     color: #46505d;
-    font-size: 1.13rem;
+    font-size: 1.07rem;
     font-weight: 500;
     line-height: 1.5;
-    margin: 0 0 0.85rem;
+    margin: 0 0 0.9rem;
   }
   .research-article .byline {
     color: var(--article-muted);
     font-size: 0.88rem;
-    line-height: 1.55;
+    line-height: 1.6;
     margin: 0 0 2.15rem;
   }
   .research-article .lead {
     color: #303742;
-    font-size: 1.13rem;
+    font-size: 1.08rem;
     line-height: 1.67;
     font-weight: 500;
     margin-bottom: 1.3rem;
   }
-  .research-article figure { margin: 2.2rem 0 2.65rem; }
+  .research-article figure { margin: 2rem 0 2.4rem; }
   .research-article figure img,
   .research-article figure video {
     display: block;
     width: 100%;
     max-width: 100%;
     height: auto;
-    margin: 0;
-    border-radius: 8px;
+    margin: 0 auto;
+    border-radius: 5px;
   }
   .research-article figure video { background: #111; }
   .research-article figcaption {
-    margin-top: 0.72rem;
-    color: var(--article-muted);
+    margin-top: 0.6rem;
+    color: #737b86;
     font-size: 0.8rem;
-    line-height: 1.55;
+    line-height: 1.5;
     text-align: left;
   }
   .research-article figcaption strong { color: #49515c; }
-  .research-article .narrow-figure img {
-    width: min(100%, 410px);
-    margin-inline: auto;
-  }
-  .research-article .key-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.2rem;
-    border-top: 1px solid var(--article-rule);
-    border-bottom: 1px solid var(--article-rule);
-    padding: 1.35rem 0;
-    margin: 2.2rem 0 2.5rem;
-  }
-  .research-article .key-stat strong {
-    display: block;
-    font-size: 1.85rem;
-    letter-spacing: -0.045em;
-    line-height: 1.2;
-  }
-  .research-article .key-stat span {
-    display: block;
-    color: var(--article-muted);
-    font-size: 0.76rem;
-    line-height: 1.45;
-    margin-top: 0.35rem;
+  .research-article .narrow-figure {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .research-article .method-note {
     border-left: 3px solid var(--article-rule);
@@ -159,26 +133,6 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     color: #49515c;
   }
   .research-article .method-note p:last-child { margin-bottom: 0; }
-  .research-article .result-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.8rem;
-    padding: 1.1rem 0 0.7rem;
-    margin: 1.4rem 0 1.8rem;
-  }
-  .research-article .result-grid strong {
-    display: block;
-    font-size: 1.58rem;
-    letter-spacing: -0.04em;
-    line-height: 1.15;
-  }
-  .research-article .result-grid span {
-    display: block;
-    color: var(--article-muted);
-    font-size: 0.76rem;
-    line-height: 1.45;
-    margin-top: 0.4rem;
-  }
   .research-article .small-note {
     font-size: 0.82rem;
     color: var(--article-muted);
@@ -197,15 +151,13 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
   }
   .research-article .research-footer p { margin: 0.45rem 0 0.8rem; }
   @media (max-width: 600px) {
-    body { font-size: 16px; line-height: 1.68; }
-    .wrapper, .container-lg, .markdown-body { padding-left: 18px; padding-right: 18px; }
-    .research-article h1 { font-size: 2.22rem; }
-    .research-article h2 { margin-top: 2.9rem; }
+    body { font-size: 16px; line-height: 1.65; }
+    .wrapper, .container-lg, .markdown-body { padding-left: 20px; padding-right: 20px; }
+    .research-article h1 { font-size: 2rem; line-height: 1.16; }
+    .research-article h2 { font-size: 1.4rem; margin-top: 2.5rem; }
     .research-article .lead { font-size: 1.07rem; }
-    .research-article .key-stats { gap: 0.65rem; }
-    .research-article .key-stat strong { font-size: 1.45rem; }
-    .research-article .key-stat span, .research-article .result-grid span { font-size: 0.69rem; }
-    .research-article .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+    .research-article figure { margin: 1.7rem 0 2rem; }
+    .research-article .narrow-figure { max-width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -214,12 +166,13 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 
 <article class="research-article" markdown="1">
 
-<p class="eyebrow">Research project · Spring 2026</p>
-
 # The Dumbest Attacks Work Best
 
 <p class="subtitle">Hidden Text and AI Shopping Agents</p>
-<p class="byline">Yuanxin Ma · Stanford University<br>Research with Andy Hall</p>
+<div class="byline">
+  <div>Yuanxin Ma · Stanford University · Spring 2026</div>
+  <div>Advised by Andy Hall</div>
+</div>
 
 <p class="lead">A product page can tell a human shopper one thing and an AI shopping agent something completely different.</p>
 
@@ -229,12 +182,6 @@ I made five fake headphones, embedded instructions that shoppers wouldn't see, a
   <img src="images/what-ai-reads.png" alt="A product page as seen by a human shopper versus the hidden instructions an AI can read." loading="eager">
   <figcaption><strong>Figure 1.</strong> Same product page, two readers. The shopper sees a normal listing; the AI also reads the hidden comment.</figcaption>
 </figure>
-
-<div class="key-stats" aria-label="Study at a glance">
-  <div class="key-stat"><strong>23</strong><span>models tested overall</span></div>
-  <div class="key-stat"><strong>5,000+</strong><span>total model calls</span></div>
-  <div class="key-stat"><strong>14/15</strong><span>current models moved in JSON</span></div>
-</div>
 
 AI is starting to pick products for people. You ask an assistant for the best headphones under $150, it reads a few product pages, and it hands you a ranking. That gives whoever writes the product page a reason to write for the model, not the shopper.
 
@@ -337,15 +284,6 @@ I wanted to know whether attacks survived both.
 
 Across all JSON runs, the plainest tricks worked best: **an HTML comment moved the target up 34% of the time, and whitespace padding 31%**. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-<div class="result-grid" aria-label="Observed upward ranking movement across JSON runs">
-  <div><strong>34%</strong><span>HTML comment</span></div>
-  <div><strong>31%</strong><span>Whitespace padding</span></div>
-  <div><strong>11%</strong><span>Unicode tags</span></div>
-  <div><strong>8%</strong><span>Zero-width encoding</span></div>
-</div>
-
-<p class="small-note">Share of JSON runs in which the target product moved up, as reported in the experiment.</p>
-
 My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security usually assumes an arms race toward more sophisticated attacks. Here, the attacker who tries less wins.
 
 ### 3. Middle ranks moved more easily than the top
@@ -412,9 +350,9 @@ I started coding in May 2026. Andy taught me to build with Claude, and this was 
 That window won't stay open. As agents start buying things for people, a product page becomes an input to a decision, and the cheapest attacks are already the ones that work. Right now, the people best positioned to use them haven't noticed yet.
 
 <div class="research-footer">
-  <strong>Explore the research</strong>
-  <p>See the source code, attack implementations, and full experimental results.</p>
-  <a href="https://github.com/yuanxinm7/hidden-text-attacks">View code and full results on GitHub →</a>
+  <strong>Code and full results</strong>
+  <p>All experiments, attack implementations, and results are available on GitHub.</p>
+  <a href="https://github.com/yuanxinm7/hidden-text-attacks">View the GitHub repository →</a>
 </div>
 
 </article>
