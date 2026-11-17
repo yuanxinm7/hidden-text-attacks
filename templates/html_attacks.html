@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Attack Results</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #f0f4ff;
+  --surface:    #ffffff;
+  --surface-2:  #e8eeff;
+  --border:     #c5d0f5;
+  --text:       #0a1533;
+  --muted:      #5566a0;
+  --accent:     #0053e2;
+  --accent-h:   #003db5;
+
+  --full-fg:    #166534;
+  --full-bg:    #dcfce7;
+  --partial-fg: #92400e;
+  --partial-bg: #fef3c7;
+  --none-fg:    #991b1b;
+  --none-bg:    #fee2e2;
+  --timeout-fg: #374151;
+  --timeout-bg: #f3f4f6;
+  --refused-fg: #5b21b6;
+  --refused-bg: #ede9fe;
+  --noisy-fg:   #0053e2;
+  --noisy-bg:   #dbeafe;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+header {
+  background: var(--accent);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+header .icon { font-size: 22px; }
+header h1 { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -.2px; }
+header p  { color: rgba(255,255,255,.7); font-size: 13px; margin-top: 2px; }
+
+main { max-width: 1500px; margin: 0 auto; padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+}
+.card-title {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--muted); margin-bottom: 16px;
+}
+
+.controls-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; color: var(--muted); font-weight: 500; }
+select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 30px 7px 10px;
+  border-radius: 6px; font-size: 13px; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235566a0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  cursor: pointer; min-width: 180px;
+}
+select:focus { outline: none; border-color: var(--accent); }
+
+.btn {
+  padding: 8px 18px; border-radius: 6px; border: none;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: background .15s, opacity .15s; white-space: nowrap;
+}
+.btn-primary  { background: var(--accent); color: #fff; }
+.btn-primary:hover  { background: var(--accent-h); }
+.btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.spinner {
+  display: none; width: 16px; height: 16px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0;
+}
+.spinner.active { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.progress-wrap { display: none; flex-direction: column; gap: 6px; }
+.progress-wrap.active { display: flex; }
+.progress-label { font-size: 12px; color: var(--muted); }
+.progress-bar-track { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.progress-bar-fill  { height: 100%; background: var(--accent); border-radius: 99px; width: 0%; transition: width .3s; }
+
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ranking-col h3 {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--muted); margin-bottom: 10px;
+}
+.ranking-list { display: flex; flex-direction: column; gap: 6px; }
+.rank-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 7px;
+}
+.rank-item.target { border-color: var(--accent); background: #dbeafe; }
+.rank-num { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 18px; }
+.rank-item.target .rank-num { color: var(--accent); }
+.rank-info { flex: 1; }
+.rank-name { font-weight: 500; font-size: 13px; }
+.rank-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.outcome-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.outcome-label { font-size: 12px; color: var(--muted); }
+.outcome-badge {
+  font-size: 12px; font-weight: 600; padding: 3px 10px;
+  border-radius: 99px; text-transform: uppercase; letter-spacing: .4px;
+}
+.outcome-badge.full     { background: var(--full-bg);    color: var(--full-fg); }
+.outcome-badge.partial  { background: var(--partial-bg); color: var(--partial-fg); }
+.outcome-badge.none     { background: var(--none-bg);    color: var(--none-fg); }
+.outcome-badge.timeout  { background: var(--timeout-bg); color: var(--timeout-fg); }
+.outcome-badge.refused  { background: var(--refused-bg); color: var(--refused-fg); }
+.rank-arrow { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+.rank-arrow.up   { color: var(--full-fg); }
+.rank-arrow.same { color: var(--muted); }
+.rank-arrow.down { color: var(--none-fg); }
+.empty-state { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+/* Matrix */
+.matrix-scroll { overflow-x: auto; }
+.matrix-table { border-collapse: collapse; width: 100%; min-width: 1300px; }
+.matrix-table th {
+  padding: 8px 10px; font-size: 11px; font-weight: 600;
+  color: var(--muted); text-align: center; white-space: nowrap;
+  border-bottom: 2px solid var(--border);
+}
+.matrix-table th.row-header { text-align: left; padding-left: 0; min-width: 190px; }
+.matrix-table th.group-header {
+  text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--accent); padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+}
+.matrix-table th.matrix-divider-th,
+.matrix-table td.matrix-divider-td { width: 3px; min-width: 3px; padding: 0; background: var(--border); }
+.matrix-table td { padding: 4px 5px; text-align: center; vertical-align: middle; }
+.matrix-table td.attack-label {
+  font-size: 12px; color: var(--muted); text-align: left;
+  padding-left: 0; padding-right: 12px; white-space: nowrap;
+}
+.matrix-table th.range-note-cell {
+  font-size: 10px; font-weight: 400; font-style: italic;
+  color: var(--muted); padding: 3px 4px 5px; border-bottom: 2px solid var(--border);
+  white-space: nowrap; letter-spacing: 0; text-transform: none;
+}
+#matrix-skip-note { font-size: 12px; color: var(--muted); margin-top: 10px; display: none; }
+
+.cell {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 34px; border-radius: 5px; font-size: 12px;
+  font-weight: 600; cursor: default;
+  transition: filter .15s, transform .1s;
+}
+.cell.clickable { cursor: pointer; }
+.cell.clickable:hover { filter: brightness(.93); transform: scale(1.07); }
+.cell.full     { background: var(--full-bg);    color: var(--full-fg); }
+.cell.partial  { background: var(--partial-bg); color: var(--partial-fg); }
+.cell.none     { background: var(--none-bg);    color: var(--none-fg); }
+.cell.timeout  { background: var(--timeout-bg); color: var(--timeout-fg); }
+.cell.refused  { background: var(--refused-bg); color: var(--refused-fg); }
+.cell.empty    { background: var(--surface-2);  color: var(--border); }
+.cell.skipped  { background: var(--surface-2);  color: var(--muted); font-size: 11px; }
+.cell.running  { background: var(--surface-2);  color: var(--muted); animation: pulse .9s ease-in-out infinite; pointer-events: none; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+/* Noisy flag badge on cell */
+.cell.noisy-baseline::after {
+  content: '~';
+  position: absolute;
+  top: 1px; right: 3px;
+  font-size: 9px;
+  color: var(--accent);
+  opacity: .7;
+}
+.cell { position: relative; }
+
+#tooltip {
+  position: fixed; display: none; z-index: 1000;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px; font-size: 12px;
+  pointer-events: none; max-width: 280px;
+  box-shadow: 0 8px 24px rgba(0,53,226,.12);
+}
+#tooltip .tt-title { font-weight: 600; margin-bottom: 8px; color: var(--text); }
+#tooltip .tt-row   { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); margin-bottom: 3px; }
+#tooltip .tt-row span:last-child { color: var(--text); font-family: monospace; }
+
+.log-area {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 7px; padding: 12px 14px; height: 140px; overflow-y: auto;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; line-height: 1.7;
+}
+.log-line          { color: var(--muted); }
+.log-line.full     { color: var(--full-fg); }
+.log-line.partial  { color: var(--partial-fg); }
+.log-line.none     { color: #aaa; }
+.log-line.error    { color: var(--none-fg); }
+.log-line.info     { color: var(--accent); }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.legend-dot  { width: 10px; height: 10px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="icon">🛒</span>
+  <div>
+    <h1>HTML Page Attack Results</h1>
+    <p>LLM ranking manipulation tested on realistic mock product pages &mdash; Stanford AI Robustness Research</p>
+  </div>
+</header>
+
+<main>
+
+  <div class="card">
+    <div class="card-title">Test Configuration</div>
+    <div class="controls-row">
+      <div class="field">
+        <label>Model</label>
+        <select id="sel-model"><option value="">Loading…</option></select>
+      </div>
+      <div class="field">
+        <label>Attack</label>
+        <select id="sel-attack"><option value="">Loading…</option></select>
+      </div>
+      <div class="field">
+        <label>Target Product</label>
+        <select id="sel-target"><option value="">Loading…</option></select>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-primary" id="btn-run" onclick="runSingle()">Run Single Test</button>
+          <button class="btn btn-secondary" id="btn-batch" onclick="runBatch()">Run Full Batch</button>
+          <button class="btn btn-secondary" id="btn-save" onclick="saveResults()">Save Results</button>
+          <span id="save-flash" style="display:none;font-size:12px;color:var(--accent);margin-left:4px;">Saved ✓</span>
+          <div class="spinner" id="spinner"></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;">
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-label" id="progress-label">0 / 0 complete</div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="single-results-card">
+    <div class="card-title">Single Test Results</div>
+    <div id="single-results"><div class="empty-state">Run a single test to see results here.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Batch Results Matrix</span>
+      <button class="btn btn-secondary" onclick="exportBatch()" style="font-size:11px;padding:5px 12px;">Export JSON</button>
+    </div>
+    <div class="matrix-scroll">
+      <table class="matrix-table" id="matrix-table">
+        <thead><tr id="matrix-header"></tr></thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--full-bg);border:1px solid var(--full-fg)"></div> Full (rank → #1)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--partial-bg);border:1px solid var(--partial-fg)"></div> Partial (moved up)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--none-bg);border:1px solid var(--none-fg)"></div> None (no change)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--refused-bg);border:1px solid var(--refused-fg)"></div> Refused</div>
+      <div class="legend-item"><span style="color:var(--accent);font-size:11px;font-weight:600;">~</span>&nbsp; Noisy baseline</div>
+    </div>
+    <div id="matrix-skip-note"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="display:flex;justify-content:space-between;">
+      <span>Log</span>
+      <span onclick="clearLog()" style="cursor:pointer;font-size:11px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;">Clear</span>
+    </div>
+    <div class="log-area" id="log"></div>
+  </div>
+
+</main>
+
+<div id="tooltip"></div>
+
+<script>
+let products = [], models = [], attacks = [];
+let modelGroups = { flagship: [], workhorse: [] };
+let baselineData = {};
+let batchResults = {};
+let isRunning = false;
+
+async function init() {
+  try {
+    const [mg, a, p, bl] = await Promise.all([
+      fetch('/api/model_groups').then(r => r.json()),
+      fetch('/api/attacks').then(r => r.json()),
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/baseline_html').then(r => r.json()),
+    ]);
+    modelGroups = mg;
+    models = [...mg.flagship, ...mg.workhorse];
+    attacks = a; products = p; baselineData = bl;
+
+    const selModel = document.getElementById('sel-model');
+    selModel.innerHTML = '';
+    ['flagship', 'workhorse'].forEach(group => {
+      const og = document.createElement('optgroup');
+      og.label = group.charAt(0).toUpperCase() + group.slice(1);
+      mg[group].forEach(v => {
+        const o = document.createElement('option');
+        o.value = v; o.textContent = v;
+        og.appendChild(o);
+      });
+      selModel.appendChild(og);
+    });
+
+    const selAttack = document.getElementById('sel-attack');
+    selAttack.innerHTML = '';
+    attacks.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = v;
+      selAttack.appendChild(o);
+    });
+
+    const selTarget = document.getElementById('sel-target');
+    selTarget.innerHTML = '';
+    products.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = `Product ${p.id} — ${p.name.split(' ').slice(0,4).join(' ')}`;
+      selTarget.appendChild(o);
+    });
+    selTarget.value = '1';
+
+    buildMatrix(1);
+    selTarget.addEventListener('change', () => {
+      buildMatrix(parseInt(selTarget.value));
+    });
+
+    log('Ready. HTML attack mode. Impossible combos will be skipped.', 'info');
+  } catch(e) {
+    log('Init failed: ' + e.message, 'error');
+  }
+}
+
+// ── Matrix ─────────────────────────────────────────────────────────────────
+function buildMatrix(targetId) {
+  const pid = String(targetId || 1);
+  const impossible = new Set(models.filter(m => {
+    const info = baselineData[m] && baselineData[m][pid];
+    return info && info.attackability === 'impossible';
+  }));
+
+  const visFlagship  = modelGroups.flagship.filter(m => !impossible.has(m));
+  const visWorkhorse = modelGroups.workhorse.filter(m => !impossible.has(m));
+
+  const thead = document.querySelector('#matrix-table thead');
+  const body  = document.getElementById('matrix-body');
+
+  const tr1 = document.createElement('tr');
+  const thLabel = document.createElement('th');
+  thLabel.className = 'row-header'; thLabel.rowSpan = 3; thLabel.textContent = 'Attack \\ Model';
+  tr1.appendChild(thLabel);
+
+  const thF = document.createElement('th');
+  thF.colSpan = visFlagship.length; thF.className = 'group-header'; thF.textContent = 'Flagship';
+  tr1.appendChild(thF);
+
+  const thDiv = document.createElement('th');
+  thDiv.className = 'matrix-divider-th'; thDiv.rowSpan = 3;
+  tr1.appendChild(thDiv);
+
+  const thW = document.createElement('th');
+  thW.colSpan = visWorkhorse.length; thW.className = 'group-header'; thW.textContent = 'Workhorse';
+  tr1.appendChild(thW);
+
+  const tr2 = document.createElement('tr');
+  [...visFlagship, ...visWorkhorse].forEach(m => {
+    const th = document.createElement('th');
+    th.textContent = m.length > 13 ? m.slice(0,12) + '…' : m;
+    th.title = m; th.dataset.model = m;
+    tr2.appendChild(th);
+  });
+
+  const tr3 = document.createElement('tr');
+  [...visFlagship, ...visWorkhorse].forEach(m => {
+    const th = document.createElement('th');
+    th.className = 'range-note-cell'; th.dataset.model = m;
+    const info = baselineData[m] && baselineData[m][pid];
+    if (info) {
+      if (info.attackability === 'noisy') {
+        th.textContent = `baseline: ${info.min}–${info.max}`;
+        th.title = `Baseline rank varies ${info.min}–${info.max} — results flagged with ~`;
+        th.style.color = 'var(--accent)';
+      } else {
+        th.textContent = `baseline: ${info.min}`;
+      }
+    }
+    tr3.appendChild(th);
+  });
+
+  thead.innerHTML = '';
+  thead.appendChild(tr1); thead.appendChild(tr2); thead.appendChild(tr3);
+
+  body.innerHTML = '';
+  attacks.forEach(attack => {
+    const tr = document.createElement('tr');
+    const td0 = document.createElement('td');
+    td0.className = 'attack-label'; td0.textContent = attack;
+    tr.appendChild(td0);
+
+    visFlagship.forEach(model => { tr.appendChild(makeCell(attack, model)); });
+
+    const tdDiv = document.createElement('td'); tdDiv.className = 'matrix-divider-td';
+    tr.appendChild(tdDiv);
+
+    visWorkhorse.forEach(model => { tr.appendChild(makeCell(attack, model)); });
+    body.appendChild(tr);
+  });
+
+  const skipNote = document.getElementById('matrix-skip-note');
+  if (skipNote) {
+    if (impossible.size > 0) {
+      skipNote.textContent = `${impossible.size} model${impossible.size > 1 ? 's' : ''} not shown — naturally rank product ${targetId} #1: ${[...impossible].join(', ')}`;
+      skipNote.style.display = 'block';
+    } else {
+      skipNote.style.display = 'none';
+    }
+  }
+}
+
+function makeCell(attack, model) {
+  const td = document.createElement('td');
+  const cell = document.createElement('div');
+  cell.className = 'cell empty';
+  cell.id = cellId(attack, model);
+  cell.textContent = '—';
+  td.appendChild(cell);
+  return td;
+}
+
+function cellId(attack, model) {
+  return 'cell-' + (attack + '||' + model).replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+function getAttackability(model, targetId) {
+  const info = baselineData[model] && baselineData[model][String(targetId)];
+  return info ? info.attackability : 'ok';
+}
+
+
+function updateCell(attack, model, result) {
+  const cell = document.getElementById(cellId(attack, model));
+  if (!cell) return;
+  const outcome = result.outcome || 'none';
+  const change  = result.rank_change ?? 0;
+  const targetId = parseInt(document.getElementById('sel-target').value);
+  const isNoisy  = getAttackability(model, targetId) === 'noisy';
+
+  cell.className = 'cell clickable ' + outcome
+    + (isNoisy ? ' noisy-baseline' : '');
+  cell.textContent = outcome === 'timeout' ? 'T/O'
+                   : outcome === 'refused' ? 'REF'
+                   : outcome === 'error'   ? 'ERR'
+                   : (change > 0 ? '+' : '') + change;
+
+  cell.onmouseenter = e => showTooltip(e, attack, model, result);
+  cell.onmousemove  = e => moveTooltip(e);
+  cell.onmouseleave = hideTooltip;
+  cell.onclick      = () => rerunCell(attack, model, result);
+}
+
+// ── Tooltip ────────────────────────────────────────────────────────────────
+function showTooltip(e, attack, model, result) {
+  const tt = document.getElementById('tooltip');
+  const cleanNames   = (result.clean_ranking  || []).map(id => productShort(id)).join(', ');
+  const poisonNames  = (result.poisoned_ranking || []).map(id => productShort(id)).join(', ');
+  const bline = result.baseline_rank != null ? result.baseline_rank : '—';
+  tt.innerHTML = `
+    <div class="tt-title">${model} &mdash; ${attack}</div>
+    <div class="tt-row"><span>Baseline rank:</span><span>${bline}</span></div>
+    <div class="tt-row"><span>Clean:</span><span>${cleanNames || '—'}</span></div>
+    <div class="tt-row"><span>Poisoned:</span><span>${poisonNames || '—'}</span></div>
+    <div class="tt-row"><span>Outcome:</span><span>${result.outcome}</span></div>
+    ${result.rank_change !== undefined
+      ? `<div class="tt-row"><span>Rank change:</span><span>${result.rank_change > 0 ? '+' : ''}${result.rank_change}</span></div>`
+      : ''}
+  `;
+  tt.style.display = 'block';
+  moveTooltip(e);
+}
+function moveTooltip(e) {
+  const tt = document.getElementById('tooltip');
+  const x = e.clientX + 14, y = e.clientY + 14;
+  const overflowX = x + 290 > window.innerWidth;
+  tt.style.left = (overflowX ? e.clientX - 290 : x) + 'px';
+  tt.style.top  = y + 'px';
+}
+function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
+
+// ── Run single ─────────────────────────────────────────────────────────────
+async function runSingle() {
+  const model    = document.getElementById('sel-model').value;
+  const attack   = document.getElementById('sel-attack').value;
+  const targetId = parseInt(document.getElementById('sel-target').value);
+  if (!model || !attack || !targetId) return;
+  if (getAttackability(model, targetId) === 'impossible') {
+    log(`Skipped: ${model} naturally ranks product ${targetId} #1 — attack meaningless.`, 'error');
+    return;
+  }
+  setRunning(true);
+  log(`Running: ${model} × ${attack} on product ${targetId}…`);
+  try {
+    const res = await fetch('/api/run_html', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, attack, target_id: targetId }),
+      signal: AbortSignal.timeout(700000),
+    });
+    const result = await res.json();
+    if (result.error) throw new Error(result.error);
+    log(`${model} × ${attack} → ${result.outcome}  (rank ${result.clean_rank} → ${result.poisoned_rank})`, result.outcome);
+    batchResults[attack + '||' + model] = result;
+    renderSingleResult(result);
+    updateCell(attack, model, result);
+  } catch(e) {
+    log(`ERROR: ${e.message}`, 'error');
+  } finally {
+    setRunning(false);
+  }
+}
+
+// ── Run batch ──────────────────────────────────────────────────────────────
+const BATCH_CONCURRENCY = 8;
+
+async function runBatch() {
+  const targetId = parseInt(document.getElementById('sel-target').value);
+  if (!targetId) return;
+  setRunning(true);
+  showProgress(true);
+
+  // Build pairs, skip impossible
+  const pairs = [];
+  for (const attack of attacks) {
+    for (const model of models) {
+      if (getAttackability(model, targetId) !== 'impossible') {
+        pairs.push({ attack, model });
+      }
+    }
+  }
+  const skipped = models.length * attacks.length - pairs.length;
+  const total = pairs.length;
+  let done = 0;
+
+  log(`Starting batch: ${total} tests for product ${targetId}, ${skipped} skipped (impossible). Concurrency: ${BATCH_CONCURRENCY}`, 'info');
+
+  pairs.forEach(({ attack, model }) => {
+    const cell = document.getElementById(cellId(attack, model));
+    if (cell) { cell.className = 'cell running'; cell.textContent = '…'; }
+  });
+
+  const executing = new Set();
+  for (const { attack, model } of pairs) {
+    const task = (async () => {
+      try {
+        const res = await fetch('/api/run_html', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model, attack, target_id: targetId }),
+          signal: AbortSignal.timeout(700000),
+        });
+        const result = await res.json();
+        if (result.error) throw new Error(result.error);
+        batchResults[attack + '||' + model] = result;
+        updateCell(attack, model, result);
+        done++;
+        setProgress(done, total);
+        log(`[${done}/${total}] ${model} × ${attack} → ${result.outcome}  (${result.clean_rank}→${result.poisoned_rank})`, result.outcome);
+      } catch(e) {
+        const outcome = (e.name === 'TimeoutError' || e.name === 'AbortError') ? 'timeout' : 'error';
+        updateCell(attack, model, { outcome, attack, model, target_id: targetId });
+        done++;
+        setProgress(done, total);
+        log(`[${done}/${total}] ${model} × ${attack} → ${outcome}: ${e.message}`, 'error');
+      }
+    })();
+    const p = task.then(() => executing.delete(p));
+    executing.add(p);
+    if (executing.size >= BATCH_CONCURRENCY) await Promise.race(executing);
+  }
+
+  await Promise.allSettled([...executing]);
+  log(`Batch complete. ${total} tests, ${skipped} skipped.`, 'info');
+  setRunning(false);
+  showProgress(false);
+}
+
+// ── Render single ──────────────────────────────────────────────────────────
+function renderSingleResult(result) {
+  const { clean_ranking, poisoned_ranking, target_id, clean_rank, poisoned_rank, rank_change, outcome, attack, model, baseline_rank } = result;
+  const changeDir   = rank_change > 0 ? 'up' : rank_change < 0 ? 'down' : 'same';
+  const changeLabel = rank_change > 0 ? `↑ moved up ${rank_change}` : rank_change < 0 ? `↓ moved down ${Math.abs(rank_change)}` : '→ no change';
+  document.getElementById('single-results').innerHTML = `
+    <div style="margin-bottom:12px;font-size:13px;color:var(--muted);">
+      <strong style="color:var(--text)">${model}</strong> &nbsp;·&nbsp; attack: <strong style="color:var(--text)">${attack}</strong>
+      ${baseline_rank != null ? `&nbsp;·&nbsp; baseline rank: <strong style="color:var(--accent)">${baseline_rank}</strong>` : ''}
+    </div>
+    <div class="results-grid">
+      <div class="ranking-col">
+        <h3>Clean Ranking</h3>
+        <div class="ranking-list">${(clean_ranking||[]).map((id,i)=>rankItem(id,i+1,target_id)).join('')}</div>
+      </div>
+      <div class="ranking-col">
+        <h3>Poisoned Ranking</h3>
+        <div class="ranking-list">${(poisoned_ranking||[]).map((id,i)=>rankItem(id,i+1,target_id)).join('')}</div>
+      </div>
+    </div>
+    <div class="outcome-row">
+      <span class="outcome-label">Outcome:</span>
+      <span class="outcome-badge ${outcome}">${outcome}</span>
+      <span class="rank-arrow ${changeDir}">${changeLabel}</span>
+    </div>`;
+}
+
+function rankItem(id, pos, targetId) {
+  const p = products.find(p => p.id === id) || { name: `Product ${id}`, price: '?', rating: '?' };
+  const isTarget = id === targetId;
+  return `<div class="rank-item${isTarget?' target':''}">
+    <span class="rank-num">#${pos}</span>
+    <div class="rank-info">
+      <div class="rank-name">${p.name.split(' ').slice(0,5).join(' ')}</div>
+      <div class="rank-meta">$${p.price} &nbsp;★${p.rating}</div>
+    </div>
+  </div>`;
+}
+
+async function rerunCell(attack, model, prevResult) {
+  const cell = document.getElementById(cellId(attack, model));
+  cell.className = 'cell running'; cell.textContent = '…';
+  hideTooltip();
+  log(`Rerunning: ${model} × ${attack}…`);
+  try {
+    const res = await fetch('/api/run_html', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, attack, target_id: prevResult.target_id }),
+      signal: AbortSignal.timeout(700000),
+    });
+    const result = await res.json();
+    if (result.error) throw new Error(result.error);
+    batchResults[attack + '||' + model] = result;
+    updateCell(attack, model, result);
+    renderSingleResult(result);
+    log(`  → ${result.outcome}  (${result.clean_rank}→${result.poisoned_rank})`, result.outcome);
+  } catch(e) {
+    const outcome = (e.name === 'TimeoutError' || e.name === 'AbortError') ? 'timeout' : 'error';
+    updateCell(attack, model, { outcome, attack, model, target_id: prevResult.target_id });
+    log(`  → ${outcome}: ${e.message}`, 'error');
+  }
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function productShort(id) {
+  const p = products.find(p => p.id === id);
+  return p ? 'P' + id : '#' + id;
+}
+function setRunning(val) {
+  isRunning = val;
+  document.getElementById('btn-run').disabled   = val;
+  document.getElementById('btn-batch').disabled = val;
+  document.getElementById('spinner').classList.toggle('active', val);
+}
+function showProgress(val) {
+  document.getElementById('progress-wrap').classList.toggle('active', val);
+  if (!val) { document.getElementById('progress-bar').style.width = '0%'; }
+}
+function setProgress(done, total) {
+  document.getElementById('progress-bar').style.width = (done / total * 100) + '%';
+  document.getElementById('progress-label').textContent = `${done} / ${total} complete`;
+}
+function log(msg, cls) {
+  const area = document.getElementById('log');
+  const line = document.createElement('div');
+  line.className = 'log-line' + (cls ? ' ' + cls : '');
+  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  area.appendChild(line);
+  area.scrollTop = area.scrollHeight;
+}
+function clearLog() { document.getElementById('log').innerHTML = ''; }
+async function saveResults() {
+  const rows = Object.values(batchResults);
+  if (!rows.length) { log('No results to save yet.', 'error'); return; }
+  const targetId = parseInt(document.getElementById('sel-target').value);
+  try {
+    const res = await fetch('/api/save_html', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ results: rows, target_id: targetId }),
+    });
+    const data = await res.json();
+    log(`Saved ${data.count} results → ${data.saved_to}`, 'info');
+    const flash = document.getElementById('save-flash');
+    flash.style.display = 'inline';
+    setTimeout(() => { flash.style.display = 'none'; }, 3000);
+  } catch(e) {
+    log(`Save failed: ${e.message}`, 'error');
+  }
+}
+
+function exportBatch() {
+  const rows = Object.values(batchResults);
+  if (!rows.length) { log('No batch results to export.', 'error'); return; }
+  const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `html-attacks-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  log(`Exported ${rows.length} results.`, 'info');
+}
+
+init();
+</script>
+</body>
+</html>

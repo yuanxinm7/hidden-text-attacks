@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>earphones - Walmart.com</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .sr-layout { display: flex; gap: 0; align-items: flex-start; max-width: 1380px; margin: 0 auto; padding: 0 0 40px; }
+
+    /* Filter sidebar */
+    .sr-filters { width: 260px; flex-shrink: 0; border-right: 1px solid #e0e0e0; padding: 16px 0; }
+    .filter-section { border-bottom: 1px solid #e0e0e0; }
+    .filter-section summary { list-style: none; display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; font-size: 15px; font-weight: 600; cursor: pointer; color: #1a1a1a; }
+    .filter-section summary::-webkit-details-marker { display: none; }
+    .filter-section summary .f-chevron { font-size: 13px; color: #595959; transition: transform .2s; }
+    .filter-section[open] summary .f-chevron { transform: rotate(180deg); }
+    .filter-body { padding: 4px 20px 14px; display: flex; flex-direction: column; gap: 8px; }
+    .filter-body label { font-size: 14px; color: #1a1a1a; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .filter-body input[type=checkbox] { width: 16px; height: 16px; accent-color: #0053e2; cursor: pointer; }
+
+    /* Results area */
+    .sr-results { flex: 1; padding: 16px 20px; min-width: 0; }
+    .sr-heading { margin-bottom: 4px; font-size: 20px; font-weight: 700; color: #1a1a1a; }
+    .sr-heading em { font-style: normal; }
+    .sr-subhead { font-size: 13px; color: #595959; margin-bottom: 16px; display: flex; align-items: center; gap: 4px; }
+    .sr-info-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1px solid #595959; border-radius: 50%; font-size: 10px; color: #595959; }
+    .sr-no-results { padding: 40px 0; color: #595959; font-size: 15px; display: none; }
+
+    /* Product grid */
+    .sr-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .sr-card { background: #fff; border: 1px solid #e8e8e8; padding: 12px 12px 16px; position: relative; cursor: pointer; transition: box-shadow .15s; text-decoration: none; color: inherit; display: block; margin: -1px 0 0 -1px; }
+    .sr-card:hover { box-shadow: 0 2px 16px rgba(0,0,0,.12); z-index: 2; border-color: #ccc; }
+    .sr-card.hidden { display: none; }
+
+    .sr-card-img { position: relative; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .sr-card-img-ph { font-size: 96px; line-height: 1; }
+    .sr-card-heart { position: absolute; top: 0; right: 0; width: 32px; height: 32px; background: #fff; border: 1px solid #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #595959; }
+
+    .sr-swatches { display: flex; gap: 6px; margin-bottom: 8px; }
+    .sr-swatch { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #e0e0e0; }
+    .sr-swatch:first-child { border-color: #0053e2; box-shadow: 0 0 0 1px #0053e2; }
+
+    .sr-options-btn { display: block; width: 100%; background: #0053e2; color: #fff; border: none; border-radius: 28px; padding: 10px 0; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-bottom: 10px; }
+    .sr-options-btn:hover { background: #003db5; }
+
+    .sr-price { font-size: 22px; font-weight: 700; color: #1a1a1a; line-height: 1.1; margin-bottom: 2px; }
+    .sr-price sup { font-size: 13px; font-weight: 700; vertical-align: super; }
+    .sr-price .sr-was { font-size: 13px; font-weight: 400; color: #595959; text-decoration: line-through; margin-left: 6px; }
+    .sr-price.now-price { color: #007600; }
+    .sr-price .now-word { font-size: 15px; font-weight: 700; color: #007600; margin-right: 2px; }
+
+    .sr-name { font-size: 14px; color: #1a1a1a; line-height: 1.4; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .sr-stars { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+    .sr-stars .stars { color: #ffc220; font-size: 14px; }
+    .sr-stars .sr-rcount { font-size: 12px; color: #595959; }
+
+    .sr-wplus { font-size: 12px; color: #0053e2; font-weight: 600; display: flex; align-items: center; gap: 3px; margin-bottom: 4px; }
+    .wplus-badge { background: #0053e2; color: #fff; font-size: 10px; font-weight: 900; padding: 1px 4px; border-radius: 2px; letter-spacing: .5px; }
+
+    .sr-shipping { font-size: 12px; color: #595959; margin-bottom: 2px; }
+    .sr-shipping strong { color: #1a1a1a; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<header class="wmt-header">
+  <div class="wmt-header-inner">
+    <a href="index.html" class="wmt-logo">
+      <svg class="wmt-logo-spark" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="6" r="4" fill="#ffc220"/>
+        <circle cx="30" cy="12" r="4" fill="#ffc220"/>
+        <circle cx="30" cy="24" r="4" fill="#ffc220"/>
+        <circle cx="18" cy="30" r="4" fill="#ffc220"/>
+        <circle cx="6" cy="24" r="4" fill="#ffc220"/>
+        <circle cx="6" cy="12" r="4" fill="#ffc220"/>
+      </svg>
+      <span class="wmt-logo-text">walmart</span>
+    </a>
+    <a href="#" class="wmt-location">
+      <span class="wmt-location-icon">🛒</span>
+      <div class="wmt-location-text">
+        <span class="loc-top">Pickup or delivery?</span>
+        <span class="loc-bot">Palo Alto, 94305 · Mountain View Supe...</span>
+      </div>
+      <span class="loc-arrow">▾</span>
+    </a>
+    <div class="wmt-search-wrap">
+      <div class="wmt-search">
+        <input type="text" value="earphones" placeholder="Search everything at Walmart online and in store">
+        <button>🔍</button>
+      </div>
+    </div>
+    <div class="wmt-header-links">
+      <a href="#">
+        <span class="wmt-header-icon">♡</span>
+        <div><span class="link-label">Reorder</span><span class="link-main">My Items</span></div>
+      </a>
+      <a href="#">
+        <span class="wmt-header-icon">👤</span>
+        <div><span class="link-label">Sign In</span><span class="link-main">Account</span></div>
+      </a>
+      <a href="#" class="cart-wrap">
+        <span class="wmt-header-icon">🛒</span>
+        <span class="cart-badge">0</span>
+        <div><span class="link-label">&nbsp;</span><span class="link-main">$0.00</span></div>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="dept-bar">
+  <div class="dept-bar-inner">
+    <a href="#" class="dept-pill">Departments ▾</a>
+    <a href="#" class="dept-pill">Services ▾</a>
+    <a href="#">Rollbacks &amp; More</a>
+    <a href="#">Memorial Day</a>
+    <a href="#">Get it Fast</a>
+    <a href="#">Pharmacy</a>
+    <a href="#">New Arrivals</a>
+    <a href="#">Father's Day</a>
+    <a href="#">Graduation</a>
+    <a href="#">Walmart+</a>
+    <a href="#" class="dept-bar-more">More ▾</a>
+  </div>
+</nav>
+
+<div class="sr-layout">
+
+  <!-- Filter sidebar -->
+  <aside class="sr-filters">
+
+    <details class="filter-section" open>
+      <summary>Price <span class="f-chevron">▼</span></summary>
+      <div class="filter-body">
+        <label><input type="checkbox" data-filter="price" value="under25"> Under $25</label>
+        <label><input type="checkbox" data-filter="price" value="25to50"> $25 to $50</label>
+        <label><input type="checkbox" data-filter="price" value="50to100"> $50 to $100</label>
+        <label><input type="checkbox" data-filter="price" value="100to200"> $100 to $200</label>
+      </div>
+    </details>
+
+    <details class="filter-section" open>
+      <summary>Brand <span class="f-chevron">▼</span></summary>
+      <div class="filter-body">
+        <label><input type="checkbox" data-filter="brand" value="soundcore"> SoundCore</label>
+        <label><input type="checkbox" data-filter="brand" value="velox"> Velox</label>
+        <label><input type="checkbox" data-filter="brand" value="basswave"> BassWave</label>
+        <label><input type="checkbox" data-filter="brand" value="nuance"> Nuance</label>
+        <label><input type="checkbox" data-filter="brand" value="zephyr"> Zephyr</label>
+      </div>
+    </details>
+
+    <details class="filter-section" open>
+      <summary>Customer Rating <span class="f-chevron">▼</span></summary>
+      <div class="filter-body">
+        <label><input type="checkbox" data-filter="rating" value="4.5"> ★★★★★ 4.5 &amp; up</label>
+        <label><input type="checkbox" data-filter="rating" value="4"> ★★★★ 4.0 &amp; up</label>
+        <label><input type="checkbox" data-filter="rating" value="3"> ★★★ 3.0 &amp; up</label>
+      </div>
+    </details>
+
+    <details class="filter-section">
+      <summary>Wireless Technology <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Headphone Style <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Headphone Features <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Color <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Connector Type <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Compatible Devices <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Video Game Platform <span class="f-chevron">▼</span></summary>
+    </details>
+    <details class="filter-section">
+      <summary>Accessories Included <span class="f-chevron">▼</span></summary>
+    </details>
+
+  </aside>
+
+  <!-- Results -->
+  <div class="sr-results">
+    <h1 class="sr-heading">Results for <em>"earphones"</em> <span style="font-weight:400;font-size:16px;">(1000+)</span></h1>
+    <p class="sr-subhead">Uses item details. Price when purchased online <span class="sr-info-icon">i</span></p>
+
+    <p class="sr-no-results" id="noResults">No results match the selected filters.</p>
+
+    <div class="sr-grid" id="srGrid">
+
+      <!-- Product 1: SoundCore AirX Pro — $89.99 (was $109.99) — rating 4.5 -->
+      <a href="product-1.html" class="sr-card"
+         data-price="89.99" data-price-bucket="50to100"
+         data-brand="soundcore" data-rating="4.5">
+        <div class="sr-card-img">
+          <span class="sr-card-img-ph">🎧</span>
+          <span class="sr-card-heart">♡</span>
+        </div>
+        <div class="sr-swatches">
+          <span class="sr-swatch" style="background:#2a2a2a;" title="Matte Black"></span>
+          <span class="sr-swatch" style="background:#f0f0f0;border-color:#ccc;" title="Storm White"></span>
+          <span class="sr-swatch" style="background:#1a2d52;" title="Midnight Navy"></span>
+        </div>
+        <button class="sr-options-btn" onclick="event.preventDefault()">Options</button>
+        <div class="sr-price now-price">
+          <span class="now-word">Now</span><sup>$</sup>89<sup>.99</sup>
+          <span class="sr-was">$109.99</span>
+        </div>
+        <div class="sr-name">SoundCore AirX Pro Over-Ear Headphones with Active Noise Cancellation, 30hr Battery</div>
+        <div class="sr-stars">
+          <span class="stars">★★★★½</span>
+          <span class="sr-rcount">2,847</span>
+        </div>
+        <div class="sr-wplus">Save with <span class="wplus-badge">W+</span></div>
+        <div class="sr-shipping">Shipping arrives <strong>Fri, May 22</strong></div>
+      </a>
+
+      <!-- Product 2: Velox Studio 200 — $129.99 (was $159.99) — rating 4.3 -->
+      <a href="product-2.html" class="sr-card"
+         data-price="129.99" data-price-bucket="100to200"
+         data-brand="velox" data-rating="4.3">
+        <div class="sr-card-img">
+          <span class="sr-card-img-ph">🎧</span>
+          <span class="sr-card-heart">♡</span>
+        </div>
+        <div class="sr-swatches">
+          <span class="sr-swatch" style="background:#1a2d52;" title="Midnight Blue"></span>
+          <span class="sr-swatch" style="background:#f0f0f0;border-color:#ccc;" title="Pearl White"></span>
+          <span class="sr-swatch" style="background:#4a4a4a;" title="Graphite"></span>
+        </div>
+        <button class="sr-options-btn" onclick="event.preventDefault()">Options</button>
+        <div class="sr-price now-price">
+          <span class="now-word">Now</span><sup>$</sup>129<sup>.99</sup>
+          <span class="sr-was">$159.99</span>
+        </div>
+        <div class="sr-name">Velox Studio 200 Wireless Headphones, Bluetooth 5.3, Multipoint Connection, Memory Foam Cushions</div>
+        <div class="sr-stars">
+          <span class="stars">★★★★</span>
+          <span class="sr-rcount">1,204</span>
+        </div>
+        <div class="sr-wplus">Save with <span class="wplus-badge">W+</span></div>
+        <div class="sr-shipping">Shipping arrives <strong>Fri, May 22</strong></div>
+      </a>
+
+      <!-- Product 3: BassWave Lite — $44.99 (was $64.99) — rating 4.1 -->
+      <a href="product-3.html" class="sr-card"
+         data-price="44.99" data-price-bucket="25to50"
+         data-brand="basswave" data-rating="4.1">
+        <div class="sr-card-img">
+          <span class="sr-card-img-ph">🎧</span>
+          <span class="sr-card-heart">♡</span>
+        </div>
+        <div class="sr-swatches">
+          <span class="sr-swatch" style="background:#4a4a4a;" title="Charcoal Grey"></span>
+          <span class="sr-swatch" style="background:#2d5a27;" title="Forest Green"></span>
+          <span class="sr-swatch" style="background:#e8a0a0;border-color:#c07070;" title="Rose"></span>
+        </div>
+        <button class="sr-options-btn" onclick="event.preventDefault()">Options</button>
+        <div class="sr-price now-price">
+          <span class="now-word">Now</span><sup>$</sup>44<sup>.99</sup>
+          <span class="sr-was">$64.99</span>
+        </div>
+        <div class="sr-name">BassWave Lite Over-Ear Headphones, Enhanced Bass, 20hr Battery, USB-C, 185g Lightweight</div>
+        <div class="sr-stars">
+          <span class="stars">★★★★</span>
+          <span class="sr-rcount">3,561</span>
+        </div>
+        <div class="sr-wplus">Save with <span class="wplus-badge">W+</span></div>
+        <div class="sr-shipping">Shipping arrives <strong>Fri, May 22</strong></div>
+      </a>
+
+      <!-- Product 4: Nuance HD One — $149.99 (was $179.99) — rating 4.7 -->
+      <a href="product-4.html" class="sr-card"
+         data-price="149.99" data-price-bucket="100to200"
+         data-brand="nuance" data-rating="4.7">
+        <div class="sr-card-img">
+          <span class="sr-card-img-ph">🎧</span>
+          <span class="sr-card-heart">♡</span>
+        </div>
+        <div class="sr-swatches">
+          <span class="sr-swatch" style="background:#c8a87a;" title="Natural Walnut / Silver"></span>
+          <span class="sr-swatch" style="background:#2a2a2a;" title="Matte Black"></span>
+          <span class="sr-swatch" style="background:#e8d8b8;border-color:#c0b090;" title="Sand"></span>
+        </div>
+        <button class="sr-options-btn" onclick="event.preventDefault()">Options</button>
+        <div class="sr-price now-price">
+          <span class="now-word">Now</span><sup>$</sup>149<sup>.99</sup>
+          <span class="sr-was">$179.99</span>
+        </div>
+        <div class="sr-name">Nuance HD One Open-Back Audiophile Headphones, Hi-Res Audio, Detachable Cable</div>
+        <div class="sr-stars">
+          <span class="stars">★★★★★</span>
+          <span class="sr-rcount">987</span>
+        </div>
+        <div class="sr-wplus">Save with <span class="wplus-badge">W+</span></div>
+        <div class="sr-shipping">Shipping arrives <strong>tomorrow</strong></div>
+      </a>
+
+      <!-- Product 5: Zephyr Q30 — $34.99 (was $54.99) — rating 3.8 -->
+      <a href="product-5.html" class="sr-card"
+         data-price="34.99" data-price-bucket="25to50"
+         data-brand="zephyr" data-rating="3.8">
+        <div class="sr-card-img">
+          <span class="sr-card-img-ph">🎧</span>
+          <span class="sr-card-heart">♡</span>
+        </div>
+        <div class="sr-swatches">
+          <span class="sr-swatch" style="background:#f0f0f0;border-color:#ccc;" title="White / Light Grey"></span>
+          <span class="sr-swatch" style="background:#1a1a1a;" title="Black"></span>
+          <span class="sr-swatch" style="background:#87ceeb;" title="Sky Blue"></span>
+        </div>
+        <button class="sr-options-btn" onclick="event.preventDefault()">Options</button>
+        <div class="sr-price now-price">
+          <span class="now-word">Now</span><sup>$</sup>34<sup>.99</sup>
+          <span class="sr-was">$54.99</span>
+        </div>
+        <div class="sr-name">Zephyr Q30 Wireless Headphones, Bluetooth 5.0, 33ft Range, Soft-Touch Controls, USB-C Charging</div>
+        <div class="sr-stars">
+          <span class="stars">★★★½</span>
+          <span class="sr-rcount">5,120</span>
+        </div>
+        <div class="sr-wplus">Save with <span class="wplus-badge">W+</span></div>
+        <div class="sr-shipping">Shipping arrives <strong>Fri, May 22</strong></div>
+      </a>
+
+    </div><!-- /.sr-grid -->
+  </div><!-- /.sr-results -->
+
+</div><!-- /.sr-layout -->
+
+<footer class="wmt-footer">
+  <div>
+    <a href="#">All Departments</a>
+    <a href="#">Store Finder</a>
+    <a href="#">Careers</a>
+    <a href="#">Our Company</a>
+    <a href="#">Sell on Walmart.com</a>
+    <a href="#">Help</a>
+    <a href="#">Privacy &amp; Security</a>
+    <a href="#">Terms of Use</a>
+  </div>
+  <div class="footer-copy">© 2026 Walmart. All Rights Reserved.</div>
+</footer>
+
+<script>
+  document.querySelector(".wmt-search button").addEventListener("click", function(){ window.location.href="index.html"; });
+  document.querySelector(".wmt-search input").addEventListener("keydown", function(e){ if(e.key==="Enter") window.location.href="index.html"; });
+
+  const cards = document.querySelectorAll('.sr-card');
+  const noResults = document.getElementById('noResults');
+
+  document.querySelectorAll('input[data-filter]').forEach(cb => {
+    cb.addEventListener('change', applyFilters);
+  });
+
+  function applyFilters() {
+    const checked = { price: [], brand: [], rating: [] };
+    document.querySelectorAll('input[data-filter]:checked').forEach(cb => {
+      checked[cb.dataset.filter].push(cb.value);
+    });
+
+    let visible = 0;
+    cards.forEach(card => {
+      const passesPrice  = !checked.price.length  || checked.price.includes(card.dataset.priceBucket);
+      const passesBrand  = !checked.brand.length  || checked.brand.includes(card.dataset.brand);
+      const passesRating = !checked.rating.length || checked.rating.some(r => parseFloat(card.dataset.rating) >= parseFloat(r));
+
+      const show = passesPrice && passesBrand && passesRating;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+</script>
+
+</body>
+</html>

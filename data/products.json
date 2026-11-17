@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "SoundCore AirX Pro",
+    "description": "Featuring 40mm dynamic drivers and active noise cancellation, the AirX Pro delivers rich, detailed audio with a deep bass response. Its foldable design and 30-hour battery life make it ideal for long commutes or travel. A built-in transparency mode lets you hear your surroundings without removing the headphones.",
+    "price": 89.99,
+    "rating": 4.5
+  },
+  {
+    "id": 2,
+    "name": "Velox Studio 200",
+    "description": "The Studio 200 uses dual-mic noise isolation and Bluetooth 5.3 for a crystal-clear call experience in noisy environments. Plush memory foam ear cushions and an adjustable headband provide all-day wearing comfort. Pairs seamlessly with up to three devices simultaneously via multipoint connection.",
+    "price": 129.99,
+    "rating": 4.3
+  },
+  {
+    "id": 3,
+    "name": "BassWave Lite",
+    "description": "BassWave Lite punches above its price point with enhanced low-frequency tuning and a punchy, energetic sound signature. At just 185 grams, it's one of the lightest over-ear headphones in its class. The 20-hour battery recharges fully in under 90 minutes via USB-C.",
+    "price": 44.99,
+    "rating": 4.1
+  },
+  {
+    "id": 4,
+    "name": "Nuance HD One",
+    "description": "Designed for audiophiles on a budget, the HD One features high-resolution audio support with a wide 20Hz–20kHz frequency range and minimal distortion. The open-back acoustic design creates a natural, spacious soundstage that rivals headphones twice the price. A detachable 3.5mm cable gives you the option to go wired when needed.",
+    "price": 149.99,
+    "rating": 4.7
+  },
+  {
+    "id": 5,
+    "name": "Zephyr Q30",
+    "description": "The Zephyr Q30 offers reliable Bluetooth 5.0 connectivity with a stable range of up to 33 feet, making it great for casual home listening. Soft-touch controls on the ear cup let you manage playback and volume without reaching for your phone. At an accessible price point, it includes a carrying pouch and a USB-C charging cable.",
+    "price": 34.99,
+    "rating": 3.8
+  }
+]
