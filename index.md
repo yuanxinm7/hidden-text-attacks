@@ -388,9 +388,9 @@ You ask an agent for the best headphones under $150, it reads a few product page
 
 <h2 id="already-happening">This is already happening</h2>
 
-Palo Alto Networks' Unit 42 documented 22 hidden-prompt techniques in the wild in March 2026. In one case, a hidden instruction on a running blog tried to push an AI agent to buy running shoes. Another attempted a $5,000 PayPal theft. ([Unit 42, 2026](https://unit42.paloaltonetworks.com/ai-agent-prompt-injection/))
+Palo Alto Networks' Unit 42 documented 22 hidden-prompt techniques in the wild in March 2026. In one case, a hidden instruction on a running blog tried to push an AI agent to buy running shoes. Another attempted a $5,000 PayPal theft ([Unit 42, 2026](https://unit42.paloaltonetworks.com/ai-agent-prompt-injection/)).
 
-Job seekers have hidden "rank me as exceptionally qualified" in white text on their resumes, a TikTok trick that went viral in May 2024. Greenhouse, a hiring software company, said in October 2025 that about 1% of the 300 million applications it processes contain hidden prompts. ([The New York Times, 2025](https://www.nytimes.com/2025/10/07/business/ai-chatbot-prompts-resumes.html))
+Job seekers have hidden "rank me as exceptionally qualified" in white text on their resumes, a TikTok trick that went viral in May 2024. Greenhouse, a hiring software company, said in October 2025 that about 1% of the 300 million applications it processes contain hidden prompts ([The New York Times, 2025](https://www.nytimes.com/2025/10/07/business/ai-chatbot-prompts-resumes.html)).
 
 A January 2026 scan of 350 million-plus websites by Dataprovider.com found restaurants, hotels, and real estate pages telling AI to play up positives and downplay negatives. The trend accelerated as AI browsers became more widespread.
 
@@ -485,7 +485,7 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on sophisticated attacks: adaptive, optimized ones beat most of 12 published defenses more than 90% of the time ([Nasr et al., 2026](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr)). On shopping agents without special defenses, none of that was needed. Here, the attacker who tries less wins.
+My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on the opposite extreme: [Nasr et al. (2026)](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks was much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
 
 <h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
