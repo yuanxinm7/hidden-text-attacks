@@ -407,7 +407,7 @@ Basically, anywhere AI reads text someone else wrote, someone is already whisper
 
 I made five fake headphones with realistic specs, prices, and ratings, and asked models to rank them. Then I hid an instruction inside one product's listing and checked whether its rank moved.
 
-I tested 23 models from OpenAI, Anthropic, Google, xAI, Meta, DeepSeek, Mistral, and Qwen, using two formats: raw JSON product data and a Walmart-style HTML page. There were 5,000+ model calls in total, about 4,850 on the 15 current models in the main comparison. Eight older model versions received a smaller number of early test runs before newer versions came out.
+I tested 23 models from OpenAI, Anthropic, Google, xAI, Meta, DeepSeek, Mistral, and Qwen. There were 5,000+ model calls in total, about 4,850 on the 15 current models in the main comparison. Eight older model versions received a smaller number of early test runs before newer versions came out.
 
 ### Two formats, two different environments
 
@@ -418,8 +418,10 @@ I tested 23 models from OpenAI, Anthropic, Google, xAI, Meta, DeepSeek, Mistral,
 I wanted to know whether attacks survived both.
 
 <div class="method-note" markdown="1">
-**What counted as success?** Models aren't perfectly consistent, so I ran each clean ranking 5 to 20 times before adding an attack. If a model naturally moved between ranks 2 and 3, an attack-induced move from 3 to 2 didn't count. Only movements outside the observed clean-ranking range counted as hits.
+**What counted as success?** Models aren't perfectly consistent, so I ran each clean ranking 5 to 20 times before adding an attack. If a product always landed in the same spot, a hit meant the attack pushed it higher than that. If it wobbled, say between 2 and 3, one move from 3 to 2 proves nothing, so a hit meant the attack landed it on 2 more often than the clean runs did, and only that extra counts in the rates below. Products the clean ranking always put at #1 were skipped, since they couldn't go higher. Most attacks ran 3 or 4 times per model and product.
 </div>
+
+A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the boundary attacks below) never moved beyond how much its baseline ranking already wobbled, and Mistral Small 4 only did so 4 times in 164 runs. To see whether that resistance held up, I reran each attack 5 to 15 times on the HTML page. Mistral Small 4 broke 25 times, and even GPT-5.5 broke twice. Mistral Medium also got extra runs because its clean ranking flipped between second and third almost exactly half the time across 40 runs. That made it hard to tell a real attack from the wobble, so I ran each attack 11 times. For one product, 10 of 11 attacks put it at second place in all 11 runs, far above the 50% baseline, so the attacks clearly had an effect.
 
 ### The 11 hiding techniques
 
@@ -478,14 +480,14 @@ I wanted to know whether attacks survived both.
 
 <figure>
   <img src="images/html-results-matrix.png" alt="Matrix showing which attacks changed model rankings in the HTML experiment." loading="lazy">
-  <figcaption><strong>Figure 6.</strong> HTML results for one of the five test products. Green means the target reached #1; yellow means it moved up but not to #1; red means no gain.</figcaption>
+  <figcaption><strong>Figure 6.</strong> HTML results for one of the five test products. Green means the target reached #1; yellow means it moved up but not to #1; red means no gain. REF = model detected the attack and refused to rank.</figcaption>
 </figure>
 
 <h3 class="finding-heading">2. Simple beat complex</h3>
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on sophisticated attacks: adaptive, optimized ones beat 12 published prompt-injection defenses more than 90% of the time ([Source: Nasr et al., 2026](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr)). On shopping agents without special defenses, none of that was needed. Here, the attacker who tries less wins.
+My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on sophisticated attacks: adaptive, optimized ones beat most of 12 published defenses more than 90% of the time ([Source: Nasr et al., 2026](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr)). On shopping agents without special defenses, none of that was needed. Here, the attacker who tries less wins.
 
 <h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
@@ -493,7 +495,7 @@ Getting from fourth to third was far easier than jumping to first. Attacks tende
 
 <h3 class="finding-heading">4. Format mattered</h3>
 
-A model that resisted in JSON could crack in HTML, and vice versa. Every attack also worked much less often in HTML, where the instruction was buried in a noisy page, though simple tricks still beat elaborate ones there. Testing one format tells you little about the other.
+A model that resisted in JSON could crack in HTML, and vice versa. Simple tricks still beat most elaborate ones on the HTML page, but they worked less often there. For instance, HTML comments, the strongest JSON attack, fell from 34% to 22%: perhaps a real page is already so full of noisy comments and code that one more blends in. Most encoded attacks went the other way; for example, Base64 rose from 16% to 23%. A result in one format doesn't guarantee the same result in the other.
 
 <h2 id="breaking-gpt-55">Breaking GPT-5.5</h2>
 
@@ -534,7 +536,7 @@ None of these defenses are entirely new. Yet in one 2025 survey reported by Vent
 
 <h2 id="are-people-selling-this">Are people already selling this?</h2>
 
-To see if attackers were already doing this, I signed my Stanford email up for BlackHatWorld, a forum where people openly sell ways to game search rankings. It's a lot of all-caps threads with fire emojis promising to "DOMINATE AI SEARCH ERA (CHATGPT / GEMINI)." I messaged a few sellers, including SerpBulls Dexter (that's the whole name), and ended up at 3am chatting with David Monsterer (again, what a name), anime profile picture and all.
+To see if attackers were already doing this, I signed my Stanford email up for BlackHatWorld, a forum where people openly sell ways to game search rankings. It's a lot of all-caps threads with fire emojis promising to "DOMINATE AI SEARCH ERA (CHATGPT / GEMINI)." The industry calls this GEO, generative engine optimization: SEO, but for getting picked by AI. I messaged a few sellers, including one who goes by SerpBulls Dexter, and ended up at 3am chatting with David Monsterer (again, what a name), anime profile picture and all.
 
 <div class="figure-pair">
   <figure>
@@ -544,11 +546,11 @@ To see if attackers were already doing this, I signed my Stanford email up for B
 
   <figure class="narrow-figure">
     <img src="images/bhw-chat.png" alt="Telegram conversation with a seller about hidden text and AI search rankings." loading="lazy">
-    <figcaption><strong>Figure 8.</strong> My 3am Telegram conversation with David Monsterer. Hidden text was familiar to him from old SEO, but he hadn't seen it used much against AI yet.</figcaption>
+    <figcaption><strong>Figure 8.</strong> My 3am Telegram conversation with David Monsterer (profile picture blurred).</figcaption>
   </figure>
 </div>
 
-When I asked David if he'd seen hidden text used on AI, he said "Rare." Later: "I don't find any black hat methods specifically for AI." The people selling AI ranking were still mostly doing old-school SEO, like brand mentions and backlinks.
+When I asked David if he'd seen hidden text used on AI, he said "Rare." Hidden text itself wasn't new to him; it's an old SEO trick. Later he added: "I don't find any black hat methods specifically for AI." The people selling AI ranking were still mostly doing old-school SEO, like brand mentions and backlinks.
 
 <h2 id="the-window-is-closing">The window is closing</h2>
 
