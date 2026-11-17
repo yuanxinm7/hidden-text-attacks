@@ -8,6 +8,8 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+  .site-header { display: none; }
+  .site-footer { display: none; }
   :root {
     --article-ink: #20242b;
     --article-muted: #67717e;
