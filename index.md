@@ -450,11 +450,11 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 ### Watch the experiments
 
-**JSON ranking test.** Pick a model and an attack, then watch how the target product's rank changes. Each cell shows the number of places the target moved. Green means it reached #1; yellow means it moved up but not to #1; red means no gain.
+**JSON ranking test.** Pick a model and an attack, then watch how the target product's rank changes. Each cell shows the number of places the target moved. Green means it reached #1; yellow means it moved up but not to #1; red means no gain. REF means the model detected the attack and refused to rank.
 
 <figure>
-  <video controls playsinline preload="metadata" aria-label="Screen recording of the JSON ranking test">
-    <source src="images/json-demo.mp4" type="video/mp4">
+  <video controls playsinline preload="auto" aria-label="Screen recording of the JSON ranking test">
+    <source src="images/json-demo.mp4#t=0.1" type="video/mp4">
     Your browser does not support embedded video.
   </video>
   <figcaption><strong>Figure 4.</strong> The JSON test interface and changes in product ranking.</figcaption>
@@ -463,8 +463,8 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 **HTML shopping page.** Here is the Walmart-style product page I built to test the same idea in a more realistic browsing environment.
 
 <figure>
-  <video controls playsinline preload="metadata" aria-label="Screen recording of the Walmart-style HTML test page">
-    <source src="images/walmart-demo.mp4" type="video/mp4">
+  <video controls playsinline preload="auto" aria-label="Screen recording of the Walmart-style HTML test page">
+    <source src="images/walmart-demo.mp4#t=0.1" type="video/mp4">
     Your browser does not support embedded video.
   </video>
   <figcaption><strong>Figure 5.</strong> The Walmart-style HTML product page used for testing.</figcaption>
@@ -478,7 +478,7 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 <figure>
   <img src="images/html-results-matrix.png" alt="Matrix showing which attacks changed model rankings in the HTML experiment." loading="lazy">
-  <figcaption><strong>Figure 6.</strong> HTML results for one of the five test products. Green means the target reached #1; yellow means it moved up but not to #1; red means no gain. REF = model detected the attack and refused to rank.</figcaption>
+  <figcaption><strong>Figure 6.</strong> HTML results for one of the five test products.</figcaption>
 </figure>
 
 <h3 class="finding-heading">2. Simple beat complex</h3>
