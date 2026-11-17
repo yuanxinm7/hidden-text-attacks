@@ -3,7 +3,11 @@ layout: default
 title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 ---
 <style>
-h2 { margin-top: 2em; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 18px; line-height: 1.7; }
+h1, h2 { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; }
+h2 { margin-top: 3em; }
+img, video { display: block; margin: 2em 0 0.8em; }
+p { margin-bottom: 1.3em; }
 </style>
 
 *Yuanxin Ma, Stanford. Research with Andy Hall, spring 2026*
