@@ -2,12 +2,15 @@
 layout: default
 title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
 ---
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-body { font-family: Georgia, "Times New Roman", serif; font-size: 18px; line-height: 1.7; }
-h1, h2 { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; }
-h2 { margin-top: 3em; }
-img, video { display: block; margin: 2em 0 0.8em; }
-p { margin-bottom: 1.3em; }
+body { font-family: "Inter", -apple-system, Arial, sans-serif; font-size: 19px; line-height: 1.65; color: #1a1a1a; }
+.container-lg, .markdown-body, main { max-width: 720px !important; margin: 0 auto !important; padding: 0 20px; }
+h1 { font-size: 2.4em; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin: 1.5em 0 0.4em; border: none; }
+h2 { font-size: 1.5em; font-weight: 800; margin-top: 2.5em; border: none; }
+p, li { margin-bottom: 1.2em; }
+img, video { display: block; width: 100%; margin: 2.5em 0 0.6em; border-radius: 6px; }
+a { color: #e8590c; }
 </style>
 
 *Yuanxin Ma, Stanford. Research with Andy Hall, spring 2026*
@@ -107,4 +110,4 @@ When I asked David if he'd seen hidden text used on AI, he said "Rare." Later: "
 
 That window won't stay open. As agents start buying things for people, a product page becomes an input to a decision, and the cheapest attacks are already the ones that work. Right now the people best positioned to use them haven't noticed yet.
 
-*[LINK: GitHub repo with code + full results] · [LINK: live demo if you host it] · Other attack variants tested (18): aria_inject, noscript_inject, html_entity_inject, soft_hyphen_inject, variation_selector_inject, combining_inject, invisible_operator_inject, interleaved_tags_inject, fake_metrics_inject, fake_system_turn, fake_dialogue_inject, context_escape, chatml_token_inject, llama3_token_inject, mistral_inst_inject, gpt_authority_inject, llama3_metrics_combo, aggressive_repeat_inject*
+*Code and full results on GitHub (https://github.com/yuanxinm7/hidden-text-attacks)*
