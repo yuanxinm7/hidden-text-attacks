@@ -1,6 +1,7 @@
 ---
 layout: default
 title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
+---
 
 Yuanxin Ma, Stanford. Research with Andy Hall, spring 2026
 
@@ -84,4 +85,3 @@ When I asked David if he'd seen hidden text used on AI, he said "Rare." Later: "
 That window won't stay open. As agents start buying things for people, a product page becomes an input to a decision, and the cheapest attacks are already the ones that work. Right now the people best positioned to use them haven't noticed yet.
 
 [LINK: GitHub repo with code + full results] · [LINK: live demo if you host it] · Other attack variants tested (18): aria_inject, noscript_inject, html_entity_inject, soft_hyphen_inject, variation_selector_inject, combining_inject, invisible_operator_inject, interleaved_tags_inject, fake_metrics_inject, fake_system_turn, fake_dialogue_inject, context_escape, chatml_token_inject, llama3_token_inject, mistral_inst_inject, gpt_authority_inject, llama3_metrics_combo, aggressive_repeat_inject
----
