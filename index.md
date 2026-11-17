@@ -101,7 +101,7 @@ I started coding in May 2026. Andy Hall taught me to build with Claude, and this
 ![BlackHatWorld threads selling AI search rankings](images/bhw-forum.png)
 <p style="color:#888; font-size:0.85em; margin-top:-0.5em;">BlackHatWorld threads selling ways to rank in Google and AI search. My username is blurred.</p>
 
-![Telegram chat with a BlackHatWorld seller](images/bhw-chat.png)
+<img src="images/bhw-chat.png" alt="Telegram chat with a BlackHatWorld seller" style="width:45%; margin:2.5em auto 0.6em;">
 <p style="color:#888; font-size:0.85em; margin-top:-0.5em;">My 3am Telegram chat with David Monsterer. Hidden text is old SEO to him, just not aimed at AI yet.</p>
 
 To see if attackers were already doing this, I signed my Stanford email up for BlackHatWorld, a forum where people openly sell ways to game search rankings. It's a lot of all-caps threads with fire emojis promising to "DOMINATE AI SEARCH ERA (CHATGPT / GEMINI)." I messaged a few sellers, including SerpBulls Dexter (that's the whole name), and ended up at 3am chatting with David Monsterer (again, what a name), anime profile picture and all.
