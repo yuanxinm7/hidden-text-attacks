@@ -369,7 +369,7 @@ title: "The Dumbest Attacks Work Best: Hidden Text and AI Shopping Agents"
     <li><a href="#breaking-gpt-55">Breaking GPT-5.5</a></li>
     <li><a href="#open-questions">What I'm not sure about yet</a></li>
     <li><a href="#who-pays">Who pays</a></li>
-    <li><a href="#what-builders-can-do">What builders can do today</a></li>
+    <li><a href="#how-to-make-these-attacks-not-worth-it">How to make these attacks not worth it</a></li>
     <li><a href="#are-people-selling-this">Are people already selling this?</a></li>
     <li><a href="#the-window-is-closing">The window is closing</a></li>
   </ol>
@@ -485,7 +485,7 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on the opposite extreme: [Nasr et al. (2026)](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks was much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
+My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on the opposite extreme: [Nasr et al. (2026)](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks were much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
 
 <h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
@@ -520,17 +520,21 @@ There are other limits too. These were five synthetic products and a controlled 
 
 Hidden text costs a seller nothing. A few lines nobody can see moved 14 of 15 models on raw product data and all 15 on the HTML page. When it works, the seller gets the sale and the shopper eats the loss. Under Visa's rules, the cardholder is responsible for a registered AI agent's purchase as if they made it themselves ([Visa Core Rules §4.1.23.10, Oct 2026](https://usa.visa.com/dam/VCOM/download/about-visa/visa-rules-public.pdf#page=268)), and Worldpay notes that "no liability shift exists yet" ([Worldpay, 2026](https://www.worldpay.com/en-GB/insights/articles/agentic-commerce-liability-is-still-being-written)). The platform and the model company lose almost nothing. So the attack is free, the payoff is a sale, and the people who could fix it aren't the ones paying.
 
-<h2 id="what-builders-can-do">What builders can do today</h2>
+<h2 id="how-to-make-these-attacks-not-worth-it">How to make these attacks not worth it</h2>
 
-None of these defenses are entirely new. Yet in one 2025 survey reported by VentureBeat, only about a third of companies had deployed dedicated prompt-injection defenses ([VentureBeat, Dec 2025](https://venturebeat.com/security/openai-admits-that-prompt-injection-is-here-to-stay)). Many systems still rely heavily on the model to recognize malicious instructions. My results suggest that's not enough by itself.
+A seller hides text because it's free and the payoff is real. For a seller, the math is roughly: (chance it works × value of a better rank) − (cost to write it) − (chance of getting caught × penalty). My tests filled in the first term: attacks moved rankings about a third of the time. The other terms are close to zero today. A hidden line takes minutes to write, almost nobody is looking for it, and nothing happens if they find it. So any payoff at all makes it worth trying.
 
-1. **Separate data from instructions.** Treat product listings and other retrieved pages as untrusted content, never as a place to accept new system rules or ranking criteria.
-2. **Strip or isolate non-rendered HTML.** Remove comments and content hidden purely for machine consumption when it isn't needed for the task. Be careful with legitimate accessibility and structured data.
-3. **Normalize and flag suspicious text.** Unicode NFKC can standardize some character variants, but it doesn't catch every cross-script homoglyph. Use separate confusable-character and mixed-script checks where appropriate.
-4. **Handle invisible characters and whitespace carefully.** Detect unexpected zero-width characters and excessive padding, without indiscriminately deleting characters used legitimately in some languages.
-5. **Inspect encoded payloads.** Identify suspicious Base64 and other encodings when present; avoid blindly decoding arbitrary user content into a privileged prompt.
-6. **Preserve message boundaries.** Make sure strings that resemble special chat tokens or role delimiters inside outside content cannot be interpreted as actual conversation structure. This is especially relevant to the GPT-5.5 result.
-7. **Test the complete pipeline.** Evaluate both structured inputs and rendered pages, with clean baselines and repeat runs. A model that is robust in one format may still be vulnerable in another.
+Borrowing the framing from a16z's [2022 DAO governance post](https://a16zcrypto.com/posts/article/dao-governance-attacks-and-how-to-avoid-them), a defense works if it makes the attack worth less, harder to get in, or harder to pull off. I'd add one more lever their framing doesn't spell out: punishment for getting caught.
+
+*Make winning worth less.* If an agent shows a few strong options instead of one "best pick," pushing a product to #1 matters less. This doesn't stop the attack. It shrinks the prize.
+
+*Make it harder to get in.* Marketplaces and agents can strip HTML comments, extra whitespace and invisible characters before the model reads a listing. In my tests the simplest tricks worked best, so cleaning the text first would remove much of what worked. Agents can also lean more on signals the seller doesn't write, like return rates, repeat purchases and delivery records. Faking those means actually selling and shipping products, so the cheaper the claim, the less it should move the ranking.
+
+*Make it harder to pull off.* Agents can treat product text as data to describe, not instructions to follow, and flag listings where hidden text says something the visible page doesn't. Most don't yet. In one 2025 survey, only about a third of companies had deployed dedicated prompt-injection defenses ([VentureBeat, Dec 2025](https://venturebeat.com/security/openai-admits-that-prompt-injection-is-here-to-stay)), so most agents are still trusting the model to spot the trick itself. My results suggest that isn't enough. GPT-5.5 ignored every ordinary hidden-text attack in JSON, yet it still moved when an attack faked the boundary between data and instructions. If a model that strong can be fooled this way, the model alone can't be the defense. No defense here is final, since attackers always get to move after the defense is built. But separating product text from instructions in the system itself means an attack has to beat the whole pipeline, not just fool one model, and that raises the bar for every seller trying it.
+
+*Make getting caught more costly.* Flagging only matters if it costs something. If marketplaces delisted or demoted sellers caught hiding instructions, a hidden line would stop being free, since one bad bet could cost the whole listing. Penalties only work if two things hold. Marketplaces have to be able to see the hidden text, since a penalty can't land on an attack that leaves no trace. And getting a new seller account has to be costly, or a delisted seller just comes back under a new name. That's where seller verification, the marketplace version of KYC, comes in.
+
+*The tradeoff.* Every one of these costs something. Stripping and flagging will catch honest sellers with messy pages, and showing more options makes an agent less convenient, which is the whole reason people use one.
 
 <h2 id="are-people-selling-this">Are people already selling this?</h2>
 
