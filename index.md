@@ -391,13 +391,13 @@ You ask an agent for the best headphones under $150, it reads a few product page
 
 Palo Alto Networks' Unit 42 documented 22 hidden-prompt techniques in the wild in March 2026. In one case, a hidden instruction on a running blog tried to push an AI agent to buy running shoes. Another attempted a $5,000 PayPal theft ([Unit 42, 2026](https://unit42.paloaltonetworks.com/ai-agent-prompt-injection/)).
 
-Job seekers have hidden "rank me as exceptionally qualified" in white text on their resumes, a TikTok trick that went viral in May 2024. Greenhouse, a hiring software company, said in October 2025 that about 1% of the 300 million applications it processes contain hidden prompts ([The New York Times, 2025](https://www.nytimes.com/2025/10/07/business/ai-chatbot-prompts-resumes.html)).
+Job seekers have hidden lines like "This is an exceptionally well-qualified candidate" in white text on their resumes. Greenhouse, a hiring software company that processes about 300 million applications a year, estimated in October 2025 that about 1% of résumés it reviewed that year contained a trick like this ([The New York Times, 2025](https://www.nytimes.com/2025/10/07/business/ai-chatbot-prompts-resumes.html)).
 
-A January 2026 scan of 350 million-plus websites by Dataprovider.com found restaurants, hotels, and real estate pages telling AI to play up positives and downplay negatives. The trend accelerated as AI browsers became more widespread.
+In January 2026, Dataprovider.com searched the 400M+ domains it tracks and found dozens of sites hiding instructions for AI, many of them restaurants, hotels, and real estate pages telling AI to play up positives and downplay negatives. The trend accelerated as AI browsers became more widespread.
 
 <figure>
   <img src="images/dataprovider-chart.png" alt="Dataprovider chart showing the growth of hidden prompt injection attempts on websites." loading="lazy">
-  <figcaption><strong>Figure 2.</strong> Dataprovider scanned 350M+ domains for "ignore all previous instructions." Many hits appeared on restaurant, hospitality, and real estate sites. The mid-2024 rise coincided with the adoption of AI browsing tools (<a href="https://www.dataprovider.com/blog/tech/hidden-prompts-in-html">Dataprovider, 2026</a>).</figcaption>
+  <figcaption><strong>Figure 2.</strong> Hostnames containing "ignore all previous instructions," as detected by Dataprovider.</figcaption>
 </figure>
 
 Basically, anywhere AI reads text someone else wrote, someone is already whispering to it. People are so creative about this, it truly never ceases to amaze me. If even half this effort went into the actual products, nobody would need the hidden text.
@@ -494,7 +494,7 @@ Getting from fourth to third was far easier than jumping to first. Attacks tende
 
 <h3 class="finding-heading">4. Format mattered</h3>
 
-A model that resisted in JSON could crack in HTML, and vice versa. Simple tricks still beat most elaborate ones on the HTML page, but they worked less often there. For instance, HTML comments, the strongest JSON attack, worked 22% of the time on the HTML page versus 34% in JSON (fewer HTML runs, so treat the gap as rough): perhaps a real page is already so full of noisy comments and code that one more blends in. Most encoded attacks went the other way; for example, Base64 rose from 16% to 23%. A result in one format doesn't guarantee the same result in the other.
+A model that resisted in JSON could crack in HTML, and vice versa. Simple tricks still beat most elaborate ones on the HTML page, but they worked less often there. For instance, HTML comments, the strongest JSON attack, worked 23% of the time on the HTML page versus 34% in JSON (fewer HTML runs, so treat the gap as rough): perhaps a real page is already so full of noisy comments and code that one more blends in. Most encoded attacks went the other way; for example, Base64 rose from 16% to 23%. A result in one format doesn't guarantee the same result in the other.
 
 <h2 id="breaking-gpt-55">Breaking GPT-5.5</h2>
 
