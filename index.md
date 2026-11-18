@@ -485,7 +485,7 @@ A few models needed more runs. In the main JSON runs, GPT-5.5 (apart from the bo
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-My read is that heavy encoding can hide the instruction from the model too. If the model can't read it, it can't follow it. Security research usually focuses on the opposite extreme: [Nasr et al. (2026)](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks were much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
+Security research usually focuses on the opposite extreme: [Nasr et al. (2026)](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks were much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
 
 <h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
@@ -512,13 +512,15 @@ Each moved the target product from third to second about 37% of the time over 38
 
 <h2 id="open-questions">What I'm not sure about yet</h2>
 
-Some attacks only worked on some products. Claude Opus 4.7 moved one product from third to first in all three runs but never moved another. One guess: hidden text works best when a product's signals already conflict, like a high price with a lower rating, so the model is unsure. I haven't tested that explanation. The next step is building products with matching versus conflicting signals and comparing.
+Looking across the results, a hidden line seems to need three things to work: it has to be readable, look permitted, and land on a close call. Readable, because heavy encoding hides the instruction from the model too, and if the model can't read it, it can't follow it. Permitted, because it has to look like something the model is allowed to follow, which is how GPT-5.5 broke in JSON. A close call, because one line can only tip a decision that's already close, which fits with middle ranks moving more easily than the top spot. Fancy attacks put their effort into hiding, which works against the first condition. But these three conditions are my reading of the results, not something I tested directly.
+
+The third is the shakiest. Some attacks only worked on some products. Claude Opus 4.7 moved one product from third to first in all three runs but never moved another. My guess is that hidden text works best when a product's signals already conflict, like a high price with a lower rating, so the model is unsure. The next step is building products with matching versus conflicting signals and comparing.
 
 There are other limits too. These were five synthetic products and a controlled ranking task, not a measurement of real-world purchases. Results can vary with prompts, products, model versions, and the amount of surrounding page content.
 
 <h2 id="who-pays">Who pays</h2>
 
-Hidden text costs a seller nothing. A few lines nobody can see moved 14 of 15 models on raw product data and all 15 on the HTML page. When it works, the seller gets the sale and the shopper eats the loss. Under Visa's rules, the cardholder is responsible for a registered AI agent's purchase as if they made it themselves ([Visa Core Rules §4.1.23.10, Oct 2026](https://usa.visa.com/dam/VCOM/download/about-visa/visa-rules-public.pdf#page=268)), and Worldpay notes that "no liability shift exists yet" ([Worldpay, 2026](https://www.worldpay.com/en-GB/insights/articles/agentic-commerce-liability-is-still-being-written)). The platform and the model company lose almost nothing. So the attack is free, the payoff is a sale, and the people who could fix it aren't the ones paying.
+When hidden text works, the seller gets the sale and the shopper eats the loss. Under Visa's rules, the cardholder is responsible for a registered AI agent's purchase as if they made it themselves ([Visa Core Rules §4.1.23.10, Oct 2026](https://usa.visa.com/dam/VCOM/download/about-visa/visa-rules-public.pdf#page=268)), and Worldpay notes that "no liability shift exists yet" ([Worldpay, 2026](https://www.worldpay.com/en-GB/insights/articles/agentic-commerce-liability-is-still-being-written)). The platform and the model company lose almost nothing. So the attack is free, the payoff is a sale, and the people who could fix it aren't the ones paying.
 
 <h2 id="how-to-make-these-attacks-not-worth-it">How to make these attacks not worth it</h2>
 
@@ -625,3 +627,4 @@ That window won't stay open. The cheapest attacks are already the ones that work
   else initToc();
 })();
 </script>
+
