@@ -494,7 +494,7 @@ Getting from fourth to third was far easier than jumping to first. Attacks tende
 
 <h3 class="finding-heading">4. Format mattered</h3>
 
-A model that resisted in JSON could crack in HTML, and vice versa. Simple tricks still beat most elaborate ones on the HTML page, but they worked less often there. For instance, HTML comments, the strongest JSON attack, worked 23% of the time on the HTML page versus 34% in JSON (fewer HTML runs, so treat the gap as rough): perhaps a real page is already so full of noisy comments and code that one more blends in. Most encoded attacks went the other way; for example, Base64 rose from 16% to 23%. A result in one format doesn't guarantee the same result in the other.
+A model that resisted in JSON could crack in HTML, and vice versa. Simple tricks still beat most elaborate ones on the HTML page, but they worked less often there. For instance, HTML comments, the strongest JSON attack, worked 23% of the time on the HTML page versus 34% in JSON (fewer HTML runs, so treat the gap as rough): perhaps a real page is already so full of noisy comments and code that one more blends in. Most encoded attacks went the other way; Base64, for example, rose from 23% to 31%. A result in one format doesn't guarantee the same result in the other.
 
 <h2 id="breaking-gpt-55">Breaking GPT-5.5</h2>
 
@@ -505,7 +505,7 @@ Two approaches worked. They targeted boundaries in how the prompt was presented 
 - **Fake system-message boundary.** One payload inserted tokens resembling the separators chat models use to mark a new system message (`<|im_start|>system`).
 - **Fake setting after the product data.** The other made it appear that the product-data block had ended and introduced a new setting beneath it (`ranking_override = True`).
 
-Each moved the target product from third to second about 37% of the time over 38 runs. Neither ever moved it to first.
+Each pushed the target product to second in 14 of 38 runs (37%), almost always up from third. Neither ever placed it first.
 
 <div class="takeaway" markdown="1">
 **My interpretation:** GPT-5.5 resisted the ordinary hidden-text attacks in this setup, but these two boundary-spoofing approaches still influenced its rankings. That suggests a different potential failure mode: confusion about where untrusted product data ends and higher-priority instructions begin. The tests show the ranking shifts, not the model's internal reasoning.
@@ -529,7 +529,7 @@ There are other limits. These were five synthetic products and a controlled rank
 
 **Measure the defenses.** Strip comments, whitespace, and invisible characters before the model reads a listing, then rerun every attack. That shows how much of the problem a cheap filter actually solves.
 
-**Price the break.** The question isn't whether strong models break—the UK AI Security Institute reports jailbreaking every frontier model it has tested ([UK AISI, 2025](https://www.far.ai/event-recordings/xander-davies-state-of-jailbreaks))—but how cheaply. GPT-5.5 hints at where to look: it ignored every hidden-text trick in JSON but moved when an attack faked where the product data ends. Mistral Small 4, which also resisted hidden text on the HTML page, moved the same way: a fake chat-token boundary shifted it in 12 of 20 runs. When hiding fails, faking the structure of the input may be the cheaper way in. The next round would build more attacks like that, such as fake JSON-LD ratings or fake "verified" tool results.
+**Price the break.** The question isn't whether strong models break—the UK AI Security Institute reports jailbreaking every frontier model it has tested ([UK AISI, 2025](https://www.far.ai/event-recordings/xander-davies-state-of-jailbreaks))—but how cheaply. GPT-5.5 hints at where to look: it ignored every hidden-text trick in JSON but moved when an attack faked where the product data ends. Mistral Small 4, which resisted most hidden-text attacks on the HTML page, moved the same way: a fake chat-token boundary shifted it in 12 of 20 runs. When hiding fails, faking the structure of the input may be the cheaper way in. The next round would build more attacks like that, such as fake JSON-LD ratings or fake "verified" tool results.
 
 Then bring in two kinds of attackers: a naive one, like a seller with no coding background copying tricks off a forum, and a pro, like a former black-hat SEO or GEO seller who games rankings for a living. For each model and attacker, record how many attempts it takes to find one that works and how long each takes to write. That would give the seller math later in this post a real cost, and show how much expertise it takes to break the strongest models.
 
