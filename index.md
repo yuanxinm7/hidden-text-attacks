@@ -486,7 +486,7 @@ A few models needed more runs. When a model barely moved, like GPT-5.5 and Mistr
 
 Across all JSON runs, the plainest tricks worked best: an HTML comment moved the target up 34% of the time, and whitespace padding 31%. The more elaborate encodings did worse: Unicode tags succeeded 11% of the time and zero-width characters 8%.
 
-Security research usually focuses on the opposite extreme: [Nasr et al., 2026](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks were much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
+Security research usually focuses on the opposite extreme: [Nasr et al. (2026)](https://www.usenix.org/conference/usenixsecurity26/presentation/nasr) took 12 published defenses against prompt injection and jailbreaks, systems built specifically to block attacks, and threw gradient descent, reinforcement learning, and human red-teamers at them. Most broke more than 90% of the time. My attacks were much simpler: written once, by hand, at no cost, against ordinary shopping agents with no special defenses. Far weaker, and they still moved rankings about a third of the time. On shopping agents, the bar is on the floor.
 
 <h3 class="finding-heading">3. Middle ranks moved more easily than the top</h3>
 
@@ -541,7 +541,7 @@ A hidden line moves the product up without making it any better. The seller gets
 
 A seller hides text because it's free and the payoff is real. For a seller, the math is roughly: (chance it works × value of a better rank) − (cost to write it) − (chance of getting caught × penalty). My tests filled in the first term, roughly: attacks moved rankings about a third of the time, though without a placebo not all of that is the model following orders. The other terms are close to zero today. A hidden line takes minutes to try, almost nobody is looking for it, and nothing happens if they find it. So any payoff at all makes it worth trying.
 
-Borrowing the framing from [a16z, 2022](https://a16zcrypto.com/posts/article/dao-governance-attacks-and-how-to-avoid-them), a defense works if it makes the attack worth less, harder to get in, or harder to pull off. I'd add one more lever their framing doesn't spell out: punishment for getting caught.
+Borrowing the framing from a16z's [2022 DAO governance post](https://a16zcrypto.com/posts/article/dao-governance-attacks-and-how-to-avoid-them), a defense works if it makes the attack worth less, harder to get in, or harder to pull off. I'd add one more lever their framing doesn't spell out: punishment for getting caught.
 
 **Make winning worth less.** If an agent shows a few strong options instead of one "best pick," pushing a product to #1 matters less. This doesn't stop the attack. It shrinks the prize.
 
