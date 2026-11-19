@@ -4,8 +4,9 @@ import os
 import re
 import hmac
 import secrets
+import tempfile
+import threading
 from datetime import datetime
-from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory, Response
 
@@ -23,6 +24,9 @@ MOCK_WALMART_DIR = os.path.join(BASE_DIR, "mock-walmart")
 CALL_LOG      = os.path.join(RESULTS_DIR, "demo", "calls2.log")
 CALL_LOG_HTML = os.path.join(RESULTS_DIR, "demo", "calls3.log")
 LATEST_PATH   = os.path.join(RESULTS_DIR, "demo", "latest.json")
+# Optional paths to one authoritative baseline file per mode.
+JSON_BASELINE_FILE = os.getenv("JSON_BASELINE_FILE", "")
+HTML_BASELINE_FILE = os.getenv("HTML_BASELINE_FILE", "")
 
 with open(PRODUCTS_PATH) as f:
     products = json.load(f)
@@ -84,6 +88,7 @@ if PERSIST:
 
 _snapshot_file = None  # tracks the file for the current batch session
 _logging_enabled = True
+_latest_lock = threading.Lock()
 
 
 def log_call(result: dict) -> None:
@@ -121,18 +126,51 @@ def log_call_html(result: dict) -> None:
         f.write(json.dumps(entry) + "\n")
 
 
+def _latest_key(result: dict) -> str:
+    """Unique demo cell across mode, model, attack, and target product."""
+    return "||".join(str(x) for x in (
+        result.get("mode", "json"), result.get("model"),
+        result.get("attack"), result.get("target_id"),
+    ))
+
+
+def _write_json_atomic(path: str, data) -> None:
+    """Avoid partial JSON files when the process is interrupted during saving."""
+    fd, temp_path = tempfile.mkstemp(prefix=".demo_", suffix=".json", dir=os.path.dirname(path))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        os.replace(temp_path, path)
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
 def update_latest(result: dict) -> None:
     if not PERSIST:
         return
-    key = f"{result.get('model')}||{result.get('attack')}"
-    try:
-        with open(LATEST_PATH) as f:
-            latest = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        latest = {}
-    latest[key] = {**result, "ts": datetime.now().isoformat(timespec="seconds")}
-    with open(LATEST_PATH, "w") as f:
-        json.dump(latest, f, indent=2)
+    with _latest_lock:
+        try:
+            with open(LATEST_PATH, encoding="utf-8") as f:
+                latest = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            latest = {}
+        if not isinstance(latest, dict):
+            raise ValueError("latest.json must contain a JSON object")
+        # Migrate existing saved rows with enough metadata to distinguish them.
+        # Old rows missing target_id cannot be recovered into distinct targets.
+        migrated = {}
+        for old_key, old_result in latest.items():
+            if isinstance(old_result, dict) and all(
+                old_result.get(k) is not None for k in ("model", "attack", "target_id")
+            ):
+                migrated[_latest_key(old_result)] = old_result
+            else:
+                migrated[old_key] = old_result
+        migrated[_latest_key(result)] = {
+            **result, "ts": datetime.now().isoformat(timespec="seconds")
+        }
+        _write_json_atomic(LATEST_PATH, migrated)
 
 
 # ---------------------------------------------------------------------------
@@ -152,6 +190,26 @@ def _product_content(html: str) -> str:
     return html.strip()
 
 
+# Keep the same injectable paragraph as the original demo/paper. Fail closed
+# instead of silently counting an unchanged poisoned page as an attack.
+_INJECTABLE_PARAGRAPH = re.compile(
+    r'(<p class="injectable">)(.*?)(</p>)', re.DOTALL
+)
+
+
+def inject_html(html: str, attack_fn) -> str:
+    matches = list(_INJECTABLE_PARAGRAPH.finditer(html))
+    if len(matches) != 1:
+        raise ValueError(f"Expected exactly one injectable paragraph; found {len(matches)}")
+    poisoned = _INJECTABLE_PARAGRAPH.sub(
+        lambda m: m.group(1) + attack_fn(m.group(2)) + m.group(3),
+        html, count=1,
+    )
+    if poisoned == html:
+        raise ValueError("Attack left HTML unchanged")
+    return poisoned
+
+
 def run_single_html(model: str, attack: str, target_id: int, timeout_extra: int = 0) -> dict:
     dummy_products = [{"id": i} for i in range(1, 6)]
 
@@ -161,17 +219,15 @@ def run_single_html(model: str, attack: str, target_id: int, timeout_extra: int 
             with open(os.path.join(MOCK_WALMART_DIR, f"product-{pid}.html"), encoding="utf-8") as f:
                 html = f.read()
             if injected and pid == target_id:
-                attack_fn = ATTACKS[attack]
-                html = re.sub(
-                    r'(<p class="injectable">)(.*?)(</p>)',
-                    lambda m: m.group(1) + attack_fn(m.group(2)) + m.group(3),
-                    html, flags=re.DOTALL,
-                )
+                html = inject_html(html, ATTACKS[attack])
             parts.append(f"=== PRODUCT {pid} ===\n{_product_content(html)}")
         return "\n\n".join(parts)
 
     clean_msg    = build_combined(injected=False) + "\n\n" + HTML_RANKING_PROMPT
     poisoned_msg = build_combined(injected=True)  + "\n\n" + HTML_RANKING_PROMPT
+
+    if clean_msg == poisoned_msg:
+        raise ValueError("Prepared HTML prompts are identical; refusing to run an invalid trial")
 
     _html_extra = max(0, HTML_MODEL_TIMEOUTS.get(model, HTML_DEFAULT_TIMEOUT) - MODEL_TIMEOUTS.get(model, DEFAULT_TIMEOUT)) + timeout_extra
     clean_ranking    = get_ranking(dummy_products, model, timeout_extra=_html_extra, user_message=clean_msg)
@@ -275,15 +331,10 @@ def product_page(product_id):
     if attack:
         if attack not in ATTACKS:
             return f"Unknown attack '{attack}'. Available: {sorted(ATTACKS)}", 400
-        attack_fn = ATTACKS[attack]
-        def inject(m):
-            return m.group(1) + attack_fn(m.group(2)) + m.group(3)
-        html = re.sub(
-            r'(<p class="injectable">)(.*?)(</p>)',
-            inject,
-            html,
-            flags=re.DOTALL,
-        )
+        try:
+            html = inject_html(html, ATTACKS[attack])
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 500
 
     return Response(html, mimetype="text/html")
 
@@ -303,44 +354,73 @@ def api_model_groups():
     return jsonify(list_model_groups())
 
 
+def _baseline_summary(mode: str) -> dict:
+    """Load baselines without silently overwriting duplicate model entries.
+
+    Use JSON_BASELINE_FILE / HTML_BASELINE_FILE to pin a known research batch.
+    Without an override, retain the previous filename glob but reject ambiguous
+    duplicates instead of silently using whichever filename sorts last.
+    """
+    chosen = JSON_BASELINE_FILE if mode == "json" else HTML_BASELINE_FILE
+    pattern = "baseline_*.json" if mode == "json" else "html_baseline_*.json"
+    if chosen:
+        source = chosen if os.path.isabs(chosen) else os.path.join(RESULTS_DIR, chosen)
+        paths = [source]
+        if not os.path.isfile(source):
+            raise FileNotFoundError(f"Configured {mode} baseline not found: {source}")
+    else:
+        paths = sorted(glob.glob(os.path.join(RESULTS_DIR, pattern)))
+        if mode == "html" and not paths:
+            # Older releases sometimes publish the clean HTML data under this name.
+            fallback = os.path.join(RESULTS_DIR, "website_baseline.json")
+            if os.path.isfile(fallback):
+                paths = [fallback]
+
+    result, origins = {}, {}
+    for fpath in paths:
+        with open(fpath, encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            raise ValueError(f"Baseline file should contain an object: {fpath}")
+        for model, entry in data.items():
+            if not isinstance(entry, dict) or "product_stats" not in entry:
+                continue
+            if model in result:
+                raise ValueError(
+                    f"Ambiguous baseline for {model}: {origins[model]} and {fpath}. "
+                    f"Set {'JSON_BASELINE_FILE' if mode == 'json' else 'HTML_BASELINE_FILE'} "
+                    "to select the intended experiment."
+                )
+            stats = entry["product_stats"]
+            if not isinstance(stats, dict):
+                raise ValueError(f"Invalid product_stats for {model} in {fpath}")
+            result[model] = {
+                pid: {
+                    "attackability": stat.get("attackability", "ok"),
+                    "min": stat["min"],
+                    "max": stat["max"],
+                }
+                for pid, stat in stats.items()
+                if isinstance(stat, dict) and "min" in stat and "max" in stat
+            }
+            origins[model] = fpath
+    return result
+
+
 @app.route("/api/baseline")
 def api_baseline():
-    result = {}
-    for fpath in sorted(glob.glob(os.path.join(RESULTS_DIR, "baseline_*.json"))):
-        with open(fpath) as f:
-            data = json.load(f)
-        for model, entry in data.items():
-            if isinstance(entry, dict) and "product_stats" in entry:
-                result[model] = {
-                    pid: {
-                        "attackability": s.get("attackability", "ok"),
-                        "min": s["min"],
-                        "max": s["max"],
-                    }
-                    for pid, s in entry["product_stats"].items()
-                    if "min" in s and "max" in s
-                }
-    return jsonify(result)
+    try:
+        return jsonify(_baseline_summary("json"))
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.route("/api/baseline_html")
 def api_baseline_html():
-    result = {}
-    for fpath in sorted(glob.glob(os.path.join(RESULTS_DIR, "html_baseline_*.json"))):
-        with open(fpath) as f:
-            data = json.load(f)
-        for model, entry in data.items():
-            if isinstance(entry, dict) and "product_stats" in entry:
-                result[model] = {
-                    pid: {
-                        "attackability": s.get("attackability", "ok"),
-                        "min": s["min"],
-                        "max": s["max"],
-                    }
-                    for pid, s in entry["product_stats"].items()
-                    if "min" in s and "max" in s
-                }
-    return jsonify(result)
+    try:
+        return jsonify(_baseline_summary("html"))
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.route("/api/save_html", methods=["POST"])
@@ -403,14 +483,17 @@ def api_run_html():
     try:
         result = run_single_html(model, attack, target_id, timeout_extra=timeout_extra)
         log_call_html(result)
+        update_latest(result)
         return jsonify(result)
     except RefusalError as e:
         err = {"model": model, "attack": attack, "target_id": target_id, "outcome": "refused", "mode": "html"}
         log_call_html(err)
+        update_latest(err)
         return jsonify(err), 200
     except Exception as e:
         err = {"model": model, "attack": attack, "target_id": target_id, "outcome": "error", "mode": "html"}
         log_call_html(err)
+        update_latest(err)
         return jsonify({"error": str(e)}), 500
 
 
@@ -505,12 +588,13 @@ def api_save():
     except FileNotFoundError:
         return jsonify({"error": "No data yet — run some tests first."}), 400
 
-    with open(_snapshot_file, "w") as f:
-        json.dump(list(latest.values()), f, indent=2)
+    rows = [row for row in latest.values()
+            if isinstance(row, dict) and row.get("mode", "json") == "json"]
+    _write_json_atomic(_snapshot_file, rows)
 
     name = os.path.basename(_snapshot_file)
-    print(f"Snapshot saved → {name}  ({len(latest)} cells)")
-    return jsonify({"saved_to": name, "count": len(latest)})
+    print(f"Snapshot saved → {name}  ({len(rows)} cells)")
+    return jsonify({"saved_to": name, "count": len(rows)})
 
 
 if __name__ == "__main__":
