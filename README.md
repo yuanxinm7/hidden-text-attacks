@@ -93,3 +93,4 @@ Model API requests incur costs, and regenerated rankings may differ. Model versi
 
 The study did not include a placebo condition, so the results do not separately isolate the effect of an instruction's meaning from the effect of adding text. Each attack in the main HTML sweep was evaluated once for each model–product combination, with extra runs for the most resistant models. See [“What I'm not sure about yet”](https://yuanxinm7.github.io/hidden-text-attacks/#what-im-not-sure-about-yet) in the article for additional qualifications.
 
+
