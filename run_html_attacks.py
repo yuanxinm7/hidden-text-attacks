@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Repeated HTML attack experiment with *clean controls*, not placebo payloads.
+"""Updated HTML attack experiment with *clean controls*, not placebo payloads.
+
+This version postdates the May 2026 exploratory, single-run HTML sweep.
+Its results and inference are not directly comparable to historical run_html_*.json.
 
 Usage:
     python run_html_attacks.py 3 --clean-runs 12 --attack-runs 8
@@ -205,9 +208,12 @@ def summarize(raw_calls, models, attacks, target_id, min_clean, min_attack, seed
 def load_impossible(target_id):
     """Optional original-study exclusion; off by default due to selection bias."""
     candidates = sorted(f for f in os.listdir(RESULTS_DIR)
-                        if f.startswith('baseline_website_') and f.endswith('.json'))
+                        if f.startswith('html_baseline_website_') and f.endswith('.json'))
     if not candidates:
-        return set()
+        raise FileNotFoundError(
+            'No results/html_baseline_website_*.json file found; '
+            '--skip-impossible requires a historical HTML baseline.'
+        )
     with open(os.path.join(RESULTS_DIR, candidates[-1]), encoding='utf-8') as stream:
         data = json.load(stream)
     return {model for model, entry in data.items()
