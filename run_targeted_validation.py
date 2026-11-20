@@ -11,7 +11,10 @@ Goal 2 — noisy-baseline pair (deepseek-v4-flash, product 4):
   Run all attacks × N reps, compare P(poisoned_rank=1) to baseline 10%
   using an exploratory one-sided proportion test (unadjusted)
 
-Usage: python3 run_targeted_validation.py [--reps N] [--workers W]
+Usage:
+  python3 run_targeted_validation.py --mode html --reps 10
+  python3 run_targeted_validation.py --mode json --reps 10
+  # Optional: --workers W
 """
 import json, os, re, sys, threading, argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
