@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import time
+import uuid
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -119,10 +120,11 @@ def main():
 
     data["meta"]["generated_at"] = datetime.now().isoformat(timespec="seconds")
 
-    with open(OUTPUT_PATH.replace(".json", "_retry.json"), "w") as f:
+    retry_path = OUTPUT_PATH.replace(".json", f"_retry_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}.json")
+    with open(retry_path, "w") as f:
         json.dump(data, f, indent=2)
 
-    print(f"\nSaved → {OUTPUT_PATH}")
+    print(f"\nSaved → {retry_path}")
     print("\n--- Updated consistency summary ---")
     for model in list_models():
         d = data["results"].get(model)
