@@ -119,7 +119,7 @@ def main():
 
     data["meta"]["generated_at"] = datetime.now().isoformat(timespec="seconds")
 
-    with open(OUTPUT_PATH, "w") as f:
+    with open(OUTPUT_PATH.replace(".json", "_retry.json"), "w") as f:
         json.dump(data, f, indent=2)
 
     print(f"\nSaved → {OUTPUT_PATH}")
