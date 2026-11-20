@@ -26,8 +26,9 @@ MOCK_WALMART_DIR = os.path.join(BASE_DIR, "mock-walmart")
 RESULTS_DIR      = os.path.join(BASE_DIR, "results")
 BASELINE_FILE_HTML = os.path.join(RESULTS_DIR, "html_baseline_website_2026-05-31.json")
 BASELINE_FILE_JSON = os.path.join(RESULTS_DIR, "baseline_2026-05-13_22-06.json")
-CALL_LOG_HTML    = os.path.join(RESULTS_DIR, "calls3.log")
-CALL_LOG_JSON    = os.path.join(RESULTS_DIR, "calls2.log")
+# New runs must never append to frozen May 2026 historical logs calls2.log/calls3.log.
+CALL_LOG_HTML = None
+CALL_LOG_JSON = None
 
 _log_lock = threading.Lock()
 
@@ -44,6 +45,8 @@ def log_calls(result: dict, mode: str = "html") -> None:
         "baseline_rank": result.get("baseline_min"),
     }
     logfile = CALL_LOG_JSON if mode == "json" else CALL_LOG_HTML
+    if logfile is None:
+        raise RuntimeError("Call log is not initialized; run through main()")
     with _log_lock:
         with open(logfile, "a") as f:
             f.write(json.dumps(entry) + "\n")
@@ -273,6 +276,15 @@ def main():
     parser.add_argument("--product", type=int, default=None, help="Restrict to a single target product id")
     parser.add_argument("--mode",    default="html", choices=["html", "json"], help="html (default) or json product format")
     args = parser.parse_args()
+    if args.reps < 1 or args.workers < 1:
+        parser.error('--reps and --workers must be positive')
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    # A unique, mode-specific append-only log for this invocation.
+    from uuid import uuid4
+    run_id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%f") + "_" + uuid4().hex[:8]
+    global CALL_LOG_HTML, CALL_LOG_JSON
+    CALL_LOG_HTML = os.path.join(RESULTS_DIR, f"targeted_validation_calls_{run_id}_html.jsonl")
+    CALL_LOG_JSON = os.path.join(RESULTS_DIR, f"targeted_validation_calls_{run_id}_json.jsonl")
 
     baseline_file = BASELINE_FILE_JSON if args.mode == "json" else BASELINE_FILE_HTML
     with open(baseline_file) as f:
@@ -345,11 +357,11 @@ def main():
                 log(f"  [{done}/{total} done]")
 
     # Save
-    ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    out = os.path.join(RESULTS_DIR, f"targeted_validation_{ts}.json")
+    out = os.path.join(RESULTS_DIR, f"targeted_validation_{run_id}_{args.mode}.json")
     with open(out, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nSaved → {out}  ({len(results)} records)")
+    print(f"Call log → {CALL_LOG_JSON if args.mode == 'json' else CALL_LOG_HTML}")
 
     # Analyze
     print("\n" + "="*60)
