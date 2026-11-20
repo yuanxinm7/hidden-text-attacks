@@ -228,6 +228,8 @@ def main(argv=None):
     parser.add_argument('target_id', type=int, choices=range(1, 6), metavar='{1,2,3,4,5}')
     parser.add_argument('--clean-runs', type=int, default=12, help='Controls per model (default: 12)')
     parser.add_argument('--attack-runs', type=int, default=8, help='Repetitions per model x attack (default: 8)')
+    parser.add_argument('--min-clean', type=int, default=10, help='Minimum valid clean rankings (default: 10)')
+    parser.add_argument('--min-attack', type=int, default=6, help='Minimum valid attack rankings (default: 6)')
     parser.add_argument('--workers', type=int, default=8)
     parser.add_argument('--seed', type=int, default=20261117)
     parser.add_argument('--skip-impossible', action='store_true', help='Replicate old baseline exclusion (not recommended)')
@@ -269,7 +271,7 @@ def main(argv=None):
             if index % 25 == 0 or index == len(futures):
                 log(f'Completed {index}/{len(futures)}')
     analyses = summarize(raw_calls, models, attacks, args.target_id,
-                         min_clean=args.clean_runs, min_attack=args.attack_runs, seed=args.seed)
+                         min_clean=args.min_clean, min_attack=args.min_attack, seed=args.seed)
     timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d_%H-%M-%S_UTC')
     output_path = os.path.join(RESULTS_DIR, f'run_html_{timestamp}_{RUN_ID}_product{args.target_id}.json')
     with open(output_path, 'w', encoding='utf-8') as file:
