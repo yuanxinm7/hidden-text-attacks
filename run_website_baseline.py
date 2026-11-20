@@ -163,7 +163,7 @@ def main(runs_per_model: int = RUNS_PER_MODEL, append: bool = False):
         if previous.get('meta', {}).get('mode') != 'html_pages':
             raise ValueError('Cannot append: existing baseline is not HTML-page mode')
         prior_hash = previous.get('meta', {}).get('prompt_sha256')
-        if prior_hash and prior_hash != prompt_hash:
+        if prior_hash != prompt_hash:
             raise ValueError('Cannot append: HTML prompt changed since previous baseline')
         prior_results = previous.get('results', {})
         if not isinstance(prior_results, dict):
