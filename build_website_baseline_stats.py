@@ -121,7 +121,7 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.output is None:
         stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        out_path = RESULTS_DIR / f"baseline_website_{stamp}.json"
+        out_path = RESULTS_DIR / f"html_baseline_website_{stamp}.json"
     else:
         out_path = args.output
     out_path.parent.mkdir(parents=True, exist_ok=True)
