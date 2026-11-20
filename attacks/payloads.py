@@ -228,6 +228,9 @@ def combining_inject(desc: str) -> str:
         if bit_idx < len(bits):
             result += COMB_0 if bits[bit_idx] == '0' else COMB_1
             bit_idx += 1
+    # Historical versions silently dropped bits when the description was shorter
+    # than the UTF-8 message bitstream. Preserve the complete payload now.
+    result += ''.join(COMB_0 if bit == '0' else COMB_1 for bit in bits[bit_idx:])
     return result
 
 
