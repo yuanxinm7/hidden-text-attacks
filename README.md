@@ -26,20 +26,28 @@ The project tested 23 models through OpenRouter; 15 were included in the princip
 | `app.py` | Local Flask demo |
 | `app_public.py` | Backend entry point for the public deployment |
 | `runner.py` | Helpers for JSON experiments and clean baselines |
-| `run_html_attacks.py` | HTML attack experiments |
+| `run_html_attacks.py` | Updated repeated-measures HTML experiment runner (not the May 2026 single-run runner) |
 | `run_website_baseline.py` | Clean HTML baseline collection |
 | `run_targeted_validation.py` | Additional validation for resistant models or variable baselines (`--mode html` or `--mode json`) |
 | `results/` | Experiment outputs and call logs |
 
 ## Results
 
-- `results/baseline_*.json` and `results/website_baseline.json` contain clean rankings. Baseline repetition counts were five per model for JSON and twenty for HTML, with forty for Mistral Medium.
+- `results/baseline_*.json` contains JSON clean baselines. `results/html_baseline_website_2026-05-31.json` contains the historical HTML clean baseline used by targeted validation; `results/website_baseline.json` is a separate website-baseline file. Baseline repetition counts were five per model for JSON and twenty for HTML, with forty for Mistral Medium.
 - `results/run_*.json` contains the primary JSON attack sweeps.
-- `results/run_html_*.json` contains the main HTML sweep results, organized by targeted product.
+- Historical `results/run_html_*.json` files (including `run_html_recovered_product1_from_calls3.json`) contain the original exploratory, single-run HTML sweep results, organized by targeted product. These files are **not** output from the current `run_html_attacks.py`.
 - `results/targeted_validation_*.json` contains additional validation trials.
-- `results/calls2.log` and `results/calls3.log` contain JSON and HTML model-call logs, respectively.
+- `results/calls2.log` and `results/calls3.log` contain historical JSON and HTML model-call logs, respectively. The **updated** HTML runner writes a separate `results/html_calls.jsonl` log and timestamped `results/run_html_YYYY-MM-DD_HH-MM-SS_UTC_productN.json` results.
 
 For stable baselines, a successful ranking movement means the targeted product rises above its clean position. For variable clean rankings, the analysis considers improvement beyond the baseline frequency of that ranking. Products consistently ranked first are excluded from upward-movement calculations because they cannot improve further.
+
+## HTML experiment versions and provenance
+
+**May 2026 published study (exploratory).** The article and the historical HTML output files describe an earlier runner: the primary HTML sweep evaluated each attack **once per model–target-product combination**, against previously collected clean baselines. For stable baselines, an upward movement relative to the clean ranking counted as success; for variable baselines, the article considers improvement beyond the clean ranking frequency. Selected models also received separate targeted-validation runs. The historical HTML outputs and `results/calls3.log` are the source records for these published observations.
+
+**Current `run_html_attacks.py` (updated after May 2026).** This runner implements a *different* protocol: 12 repeated clean requests per model and 8 requests per attack/model by default, shuffled execution, a one-sided permutation test for lower mean attack rank, and Benjamini–Hochberg correction over model–attack comparisons for each target-product run. It has **no neutral/placebo payload condition**. It writes `results/html_calls.jsonl` and distinct timestamped `_UTC_productN.json` files. The current script **cannot exactly reproduce the May 2026 single-run procedure**, and its statistical tests have **not retrospectively validated** the historical observations.
+
+Do not combine the two output schemas or interpret historical single-run success counts as permutation-test findings. To reproduce the historical workflow exactly, obtain the original runner revision from version control if available; the current runner is for new experiments. Original research results in `results/` should be preserved as-is.
 
 ## Run it yourself
 
