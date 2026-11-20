@@ -2,7 +2,7 @@
 """Summarize clean HTML ranking runs by model and product.
 
 Reads results/website_baseline.json and writes
-results/baseline_website_<YYYY-MM-DD_HH-MM-SS>.json.
+results/html_baseline_website_<YYYY-MM-DD_HH-MM-SS>.json.
 
 The output retains ``product_stats`` and ``attackability`` for compatibility
 with older visualization and experiment code.  ``impossible`` means only that
