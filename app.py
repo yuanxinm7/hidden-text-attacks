@@ -25,7 +25,7 @@ CALL_LOG      = os.path.join(RESULTS_DIR, "demo", "calls2.log")
 CALL_LOG_HTML = os.path.join(RESULTS_DIR, "demo", "calls3.log")
 LATEST_PATH   = os.path.join(RESULTS_DIR, "demo", "latest.json")
 # Optional paths to one authoritative baseline file per mode.
-JSON_BASELINE_FILE = os.getenv("JSON_BASELINE_FILE", "")
+JSON_BASELINE_FILE = os.getenv("JSON_BASELINE_FILE", "baseline_current.json")
 HTML_BASELINE_FILE = os.getenv("HTML_BASELINE_FILE", "")
 
 with open(PRODUCTS_PATH) as f:
